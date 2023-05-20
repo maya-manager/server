@@ -31,7 +31,12 @@ App to manage your pocket money and keep track of your expenses and account betw
 - Auto adjust money between people (if 2 people are together and one person spent 30rs one time and another spend 20 next time than app will automatically adjust that only 10rs is left to be paid by the person who spend 20rs)
 
 ## Docs
+
 All the docs for each project are present in their respective directories in `docs` folder
+
+## UI Design
+
+[Figma URL](https://www.figma.com/file/ojtvKg3GqfcWxfQh8CPBFO/Maya?type=design&t=YiQRFjTrCGUL18Ic-1)
 
 ## Color Reference
 
