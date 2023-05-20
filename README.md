@@ -42,7 +42,7 @@ All the docs for each project are present in their respective directories in `do
 | Grey       | ![#B0BBC4](https://via.placeholder.com/10/B0BBC4?text=+) #B0BBC4 |
 | Grey light | ![#CBD2D8](https://via.placeholder.com/10/CBD2D8?text=+) #CBD2D8 |
 
-## [Database design](https://tinyurl.com/2p93fkxz)
+## [Database design](https://tinyurl.com/c8atz2zm)
 
 > :warning:
 > This database design is will be updated in future based on different needs
