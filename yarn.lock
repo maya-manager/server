@@ -9,7 +9,7 @@
   dependencies:
     regenerator-runtime "^0.13.11"
 
-all-contributors-cli@^6.26.0:
+all-contributors-cli@^6.25.1:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/all-contributors-cli/-/all-contributors-cli-6.26.0.tgz#5eaebdfc183290bfd2d3cc018a1e102ae83137a0"
   integrity sha512-HOMfawD0XyNbOvLUn7rOAP5N9RLnbH+Y/9/IoxwPzCmy6srHSFyRMwbpD0H7Tw+1QzdJT8RH7bTe1IZkPhF+NQ==
