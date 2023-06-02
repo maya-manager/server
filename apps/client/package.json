@@ -19,7 +19,7 @@
 	"devDependencies": {
 		"@babel/core": "^7.22.1",
 		"@babel/runtime": "^7.22.3",
-		"@types/react": "~18.0.14",
+		"@types/react": "~18.2.0",
 		"ts-node": "^10.9.1",
 		"typescript": "^5.0.0"
 	},
