@@ -17,5 +17,6 @@
 	},
 	"devDependencies": {
 		"all-contributors-cli": "^6.25.1"
-	}
+	},
+	"packageManager": "yarn@3.6.0"
 }
