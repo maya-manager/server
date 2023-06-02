@@ -1,0 +1,21 @@
+# Config for welcome
+
+# Comment to be posted to on first time issues
+newIssueWelcomeComment: >
+  Thanks for opening your first issue here! Be sure to follow the issue template!
+
+# Comment to be posted to on PRs from first time contributors in your repository
+newPRWelcomeComment: |
+  💖 Thanks for opening this pull request! 💖
+
+  We use [conventional commit messages](https://www.conventionalcommits.org/en/v1.0.0/) to streamline the release process. Before your pull request can be merged, you should **update your pull request title** to start with a semantic prefix.
+
+  Examples of commit messages with semantic prefixes:
+
+  - `fix: don't overwrite prevent_default if default wasn't prevented`
+  - `feat: add app.isPackaged() method`
+  - `docs: app.isDefaultProtocolClient is now available on Linux`
+
+# Comment to be posted to on pull requests merged by a first time user
+firstPRMergeComment: >
+  Congrats on merging your first pull request! 🎉🎉🎉
