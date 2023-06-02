@@ -9,7 +9,7 @@ body:
       label: Project
       description: In which project should we update or create new documentation?
       options:
-        - "Mobile app"
+        - "Client"
         - "Server"
         - "Core"
     validations:

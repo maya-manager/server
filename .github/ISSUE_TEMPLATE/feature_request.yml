@@ -9,7 +9,7 @@ body:
       label: Project
       description: In which project do you want this feature to be implemented?
       options:
-        - "Mobile app"
+        - "Client"
         - "Server"
         - "Core"
     validations:

@@ -9,7 +9,7 @@ body:
       label: Project
       description: In which project should we write new tests or check on failing tests?
       options:
-        - "Mobile app"
+        - "Client"
         - "Server"
         - "Core"
     validations:

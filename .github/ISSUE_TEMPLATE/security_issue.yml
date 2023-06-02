@@ -9,7 +9,7 @@ body:
       label: Project
       description: In which project this security issue is located?
       options:
-        - "Mobile app"
+        - "Client"
         - "Server"
         - "Core"
     validations:
