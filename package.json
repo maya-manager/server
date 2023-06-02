@@ -1,5 +1,5 @@
 {
-	"name": "maya",
+	"name": "@maya/maya",
 	"version": "1.0.0",
 	"description": "App to manage your pocket money and keep track of your expenses and account between multiple people",
 	"main": "index.js",
@@ -7,6 +7,10 @@
 	"author": "Ayush Chugh <ayushchugh2006@gmail.com>",
 	"license": "MIT",
 	"private": true,
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
 	"scripts": {
 		"contributors:add": "all-contributors add",
 		"contributors:generate": "all-contributors generate"
