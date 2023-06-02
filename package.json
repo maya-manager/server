@@ -1,0 +1,17 @@
+{
+	"name": "maya",
+	"version": "1.0.0",
+	"description": "App to manage your pocket money and keep track of your expenses and account between multiple people",
+	"main": "index.js",
+	"repository": "git@github.com:aayushchugh/maya.git",
+	"author": "Ayush Chugh <ayushchugh2006@gmail.com>",
+	"license": "MIT",
+	"private": true,
+	"scripts": {
+		"contributors:add": "all-contributors add",
+		"contributors:generate": "all-contributors generate"
+	},
+	"devDependencies": {
+		"all-contributors-cli": "^6.25.1"
+	}
+}
