@@ -11,7 +11,7 @@
 	"extends": [
 		"plugin:react/recommended",
 		"plugin:react-native/all",
-		"../../config/.eslintrc"
+		"../../.eslintrc"
 	],
 	"parserOptions": {
 		"ecmaFeatures": {
