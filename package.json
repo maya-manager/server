@@ -7,15 +7,18 @@
 	"author": "Ayush Chugh <ayushchugh2006@gmail.com>",
 	"license": "MIT",
 	"private": true,
-	"workspaces": [
-		"apps/*",
-		"packages/*"
-	],
+	"workspaces": {
+		"packages": [
+			"apps/*",
+			"packages/*"
+		]
+	},
 	"scripts": {
 		"contributors:add": "all-contributors add",
 		"contributors:generate": "all-contributors generate"
 	},
 	"devDependencies": {
+		"@types/node": "^20.2.5",
 		"all-contributors-cli": "^6.25.1"
 	},
 	"packageManager": "yarn@3.6.0"
