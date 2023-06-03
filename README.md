@@ -1,9 +1,11 @@
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <div align="center">
-<img alt="logo" height="300" width="300" src="./images/logos/full.svg" />
+<img alt="logo" height="300" width="300" src="./assets/logos/full.svg" />
 </div>
 App to manage your pocket money and keep track of your expenses and account between multiple people
 
