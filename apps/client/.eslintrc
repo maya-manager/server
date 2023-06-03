@@ -1,0 +1,30 @@
+{
+	"env": {
+		"es2021": true,
+		"node": true,
+		"jest": true,
+		"browser": true,
+		"react-native/react-native": true
+	},
+	"parser": "@typescript-eslint/parser",
+	"plugins": ["react", "react-native"],
+	"extends": [
+		"plugin:react/recommended",
+		"plugin:react-native/all",
+		"../../config/.eslintrc"
+	],
+	"parserOptions": {
+		"ecmaFeatures": {
+			"jsx": true
+		}
+	},
+	"settings": {
+		"import/resolver": {
+			"typescript": {}
+		}
+	},
+	"rules": {
+		"react/boolean-prop-naming": "error",
+		"react/react-in-jsx-scope": "off"
+	}
+}
