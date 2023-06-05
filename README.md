@@ -1,7 +1,5 @@
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
-
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <div align="center">
@@ -73,7 +71,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/AdityaaPant"><img src="https://avatars.githubusercontent.com/u/128887705?v=4?s=70" width="70px;" alt="Aditya Pant"/><br /><sub><b>Aditya Pant</b></sub></a><br /><a href="#design-adityaapant" title="Design">🎨</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/AdityaaPant"><img src="https://avatars.githubusercontent.com/u/128887705?v=4?s=70" width="70px;" alt="Aditya Pant"/><br /><sub><b>Aditya Pant</b></sub></a><br /><a href="#design-adityaapant" title="Design">🎨</a> <a href="https://github.com/aayushchugh/maya/commits?author=adityaapant" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Vanshhemu"><img src="https://avatars.githubusercontent.com/u/134847830?v=4?s=70" width="70px;" alt="Vanshhemu"/><br /><sub><b>Vanshhemu</b></sub></a><br /><a href="#design-Vanshhemu" title="Design">🎨</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/DanielXing1103"><img src="https://avatars.githubusercontent.com/u/112993709?v=4?s=70" width="70px;" alt="DanielXing1103"/><br /><sub><b>DanielXing1103</b></sub></a><br /><a href="https://github.com/aayushchugh/maya/commits?author=DanielXing1103" title="Documentation">📖</a></td>
     </tr>
