@@ -61,7 +61,7 @@ All the docs for each project are present in their respective directories in `do
 > :warning:
 > This database design is will be updated in future based on different needs
 
-![db design](server/docs/db/db-design.svg)
+![db design](./apps/server/docs/database/db-design.svg)
 
 ## Contributors ✨
 
