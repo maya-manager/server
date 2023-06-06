@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+    tests_server:
+        container_name: tests_server
+        restart: always
+        build:
+            dockerfile: ./apps/server/Dockerfile.test
+
+        ports:
+            - ${SERVER_PORT}:${SERVER_PORT}
+        depends_on:
+            - tests_db
+        volumes:
+            - .:/usr/src/app
+
+    tests_db:
+        container_name: tests_db
+        image: postgres
+        ports:
+            - "5433:${TESTS_DB_PORT}"
+        volumes:
+            - tests_db:/data/tets_db
+        environment:
+            - POSTGRES_PASSWORD=${TESTS_DB_PASSWORD}
+            - POSTGRES_DB=${TESTS_DB_NAME}
+volumes:
+    tests_db: {}
