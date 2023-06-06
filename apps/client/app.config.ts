@@ -16,6 +16,7 @@ const config: ExpoConfig = {
 		backgroundColor: "#ffffff",
 	},
 	assetBundlePatterns: ["**/*"],
+	jsEngine: "hermes",
 	ios: {
 		supportsTablet: true,
 	},
@@ -24,9 +25,6 @@ const config: ExpoConfig = {
 			foregroundImage: "./assets/adaptive-icon.png",
 			backgroundColor: "#FFFFFF",
 		},
-	},
-	web: {
-		favicon: "./assets/favicon.png",
 	},
 };
 
