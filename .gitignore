@@ -2,6 +2,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,macos,linux,node,react,reactnative,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,macos,linux,node,react,reactnative,windows
 
+/docs
+migrations
+
 ### Linux ###
 *~
 
@@ -23,8 +26,63 @@
 .AppleDouble
 .LSOverride
 
+node_modules/
+.expo/
+dist/
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+
+# macOS
+.DS_Store
+
+# Temporary files created by Metro to check the health of the file watcher
+.metro-health-check*
+
+# compiled output
+/dist
+/node_modules
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS
+.DS_Store
+
+# Tests
+/coverage
+/.nyc_output
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
