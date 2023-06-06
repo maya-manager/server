@@ -61,6 +61,12 @@ All the docs for each project are present in their respective directories in `do
 
 ![db design](./apps/server/docs/database/db-design.svg)
 
+
+## Technologies
+1. Backend : Node js, Nestjs, PostgreSQL, Jest , Prisma.
+2. Frontend: React native, expo.
+
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
