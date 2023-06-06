@@ -1,7 +1,5 @@
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
-
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <div align="center">
@@ -36,8 +34,11 @@ App to manage your pocket money and keep track of your expenses and account betw
   each person can add their budget for the trip and you will see that. you can plan your trips according to your budget and while spending on the trip you can also keep record of who spent how much and also see how much money is left. and remaining money can be divider among the people who are in the trip).
 - Auto adjust money between people (if 2 people are together and one person spent 30rs one time and another spend 20 next time than app will automatically adjust that only 10rs is left to be paid by the person who spend 20rs)
 
-## Docs
+## Discord
 
+Calling all coding enthusiasts! If you want to be a part of our ongoing project, Maya, and other upcoming projects in the near future, join our server. Whether you want to contribute or become an official member of the server, we invite you to join us! Discord link: **[Discord](https://discord.com/invite/A2GdYbwAnw)**
+
+## Docs
 All the docs for each project are present in their respective directories in `docs` folder
 
 ## UI Design
@@ -58,7 +59,11 @@ All the docs for each project are present in their respective directories in `do
 > :warning:
 > This database design is will be updated in future based on different needs
 
-![db design](server/docs/db/db-design.svg)
+![db design](./apps/server/docs/database/db-design.svg)
+
+## Technologies
+1. Backend : Node js, Nestjs, PostgreSQL, Jest , Prisma.
+2. Frontend: React native, expo.
 
 ## Contributors ✨
 
@@ -70,7 +75,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/AdityaaPant"><img src="https://avatars.githubusercontent.com/u/128887705?v=4?s=70" width="70px;" alt="Aditya Pant"/><br /><sub><b>Aditya Pant</b></sub></a><br /><a href="#design-adityaapant" title="Design">🎨</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/AdityaaPant"><img src="https://avatars.githubusercontent.com/u/128887705?v=4?s=70" width="70px;" alt="Aditya Pant"/><br /><sub><b>Aditya Pant</b></sub></a><br /><a href="#design-adityaapant" title="Design">🎨</a> <a href="https://github.com/aayushchugh/maya/commits?author=adityaapant" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Vanshhemu"><img src="https://avatars.githubusercontent.com/u/134847830?v=4?s=70" width="70px;" alt="Vanshhemu"/><br /><sub><b>Vanshhemu</b></sub></a><br /><a href="#design-Vanshhemu" title="Design">🎨</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/DanielXing1103"><img src="https://avatars.githubusercontent.com/u/112993709?v=4?s=70" width="70px;" alt="DanielXing1103"/><br /><sub><b>DanielXing1103</b></sub></a><br /><a href="https://github.com/aayushchugh/maya/commits?author=DanielXing1103" title="Documentation">📖</a></td>
     </tr>
