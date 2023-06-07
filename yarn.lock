@@ -2869,7 +2869,7 @@ __metadata:
     expo: ^48.0.19
     expo-status-bar: ~1.4.4
     react: 18.2.0
-    react-native: 0.71.8
+    react-native: 0.71.9
     ts-node: ^10.9.1
     typescript: ^5.0.0
   languageName: unknown
@@ -14039,9 +14039,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native@npm:0.71.8":
-  version: 0.71.8
-  resolution: "react-native@npm:0.71.8"
+"react-native@npm:0.71.9":
+  version: 0.71.9
+  resolution: "react-native@npm:0.71.9"
   dependencies:
     "@jest/create-cache-key-function": ^29.2.1
     "@react-native-community/cli": 10.2.2
@@ -14081,7 +14081,7 @@ __metadata:
     react: 18.2.0
   bin:
     react-native: cli.js
-  checksum: fe887c1b8bded23f9efea9dc10a8a8b2f32147e06418fc9a78294944874797abb0185ebcb0fdc5ce88046280bca72264ae8d119f4ca681a3e0bc502d0f75bfbe
+  checksum: aae572e284932711d1b11384ae3c626a5152588006100561b0a2bb4414b6dca3c1f1a27ddb868840a4543f504477983cf8dcb98268490cc33a90910a7241a9e1
   languageName: node
   linkType: hard
 
