@@ -2869,7 +2869,7 @@ __metadata:
     expo: ^48.0.19
     expo-status-bar: ~1.4.4
     react: 18.2.0
-    react-native: 0.71.9
+    react-native: 0.71.10
     ts-node: ^10.9.1
     typescript: ^5.0.0
   languageName: unknown
@@ -14032,16 +14032,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-gradle-plugin@npm:^0.71.18":
-  version: 0.71.18
-  resolution: "react-native-gradle-plugin@npm:0.71.18"
-  checksum: 19f0a41e29c9210ff495010aaa612f2c2f4f5f937b6c20266c8dc62f4ccedc65bb7576de59b2f3fd2bb8044ce9785e56673879f2eb452f948e6659a5e1fa5894
+"react-native-gradle-plugin@npm:^0.71.19":
+  version: 0.71.19
+  resolution: "react-native-gradle-plugin@npm:0.71.19"
+  checksum: 2e3ab679f0b81edd81b9fb88a73a16c8b9b6dbef4e7158fd894c42e6dff04ba8d11f1b9663ffa2c30d0d9deee3cd44b033cd280322c010be3c290e4422088a7a
   languageName: node
   linkType: hard
 
-"react-native@npm:0.71.9":
-  version: 0.71.9
-  resolution: "react-native@npm:0.71.9"
+"react-native@npm:0.71.10":
+  version: 0.71.10
+  resolution: "react-native@npm:0.71.10"
   dependencies:
     "@jest/create-cache-key-function": ^29.2.1
     "@react-native-community/cli": 10.2.2
@@ -14068,7 +14068,7 @@ __metadata:
     promise: ^8.3.0
     react-devtools-core: ^4.26.1
     react-native-codegen: ^0.71.5
-    react-native-gradle-plugin: ^0.71.18
+    react-native-gradle-plugin: ^0.71.19
     react-refresh: ^0.4.0
     react-shallow-renderer: ^16.15.0
     regenerator-runtime: ^0.13.2
@@ -14081,7 +14081,7 @@ __metadata:
     react: 18.2.0
   bin:
     react-native: cli.js
-  checksum: aae572e284932711d1b11384ae3c626a5152588006100561b0a2bb4414b6dca3c1f1a27ddb868840a4543f504477983cf8dcb98268490cc33a90910a7241a9e1
+  checksum: 08780690cdbdb15798bb59666ab7deabb4555904e78bcade60be42a35ea75365a668c2b5da1f3b431a66d0f1614e143344024ed8be49c219cd034a17fabb1ae9
   languageName: node
   linkType: hard
 
