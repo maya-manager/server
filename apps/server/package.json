@@ -13,7 +13,9 @@
 		"test": "NODE_ENV=test && jest",
 		"test:watch": "NODE_ENV=test jest --watch",
 		"test:cov": "jest --coverage",
-		"test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+		"test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+		"prisma:migrate": "prisma migrate dev --name \"init\" --preview-feature --create-only",
+		"prisma:generate": "prisma generate"
 	},
 	"dependencies": {
 		"@nestjs/common": "^9.0.0",

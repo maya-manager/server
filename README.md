@@ -1,5 +1,7 @@
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <div align="center">
@@ -39,20 +41,16 @@ App to manage your pocket money and keep track of your expenses and account betw
 Calling all coding enthusiasts! If you want to be a part of our ongoing project, Maya, and other upcoming projects in the near future, join our server. Whether you want to contribute or become an official member of the server, we invite you to join us! Discord link: **[Discord](https://discord.com/invite/A2GdYbwAnw)**
 
 ## Docs
+
 All the docs for each project are present in their respective directories in `docs` folder
+
+## Run locally
+
+Check [CONTRIBUTING.md](./CONTRIBUTING.md) to know how to run the project locally
 
 ## UI Design
 
 [Figma URL](https://www.figma.com/file/ojtvKg3GqfcWxfQh8CPBFO/Maya?type=design&t=YiQRFjTrCGUL18Ic-1)
-
-## Color Reference
-
-| Color      | Hex                                                              |
-| ---------- | ---------------------------------------------------------------- |
-| Primary    | ![#2C6871](https://via.placeholder.com/10/2C6871?text=+) #2C6871 |
-| Accent     | ![#8FFFA8](https://via.placeholder.com/10/8FFFA8?text=+) #8FFFA8 |
-| Grey       | ![#B0BBC4](https://via.placeholder.com/10/B0BBC4?text=+) #B0BBC4 |
-| Grey light | ![#CBD2D8](https://via.placeholder.com/10/CBD2D8?text=+) #CBD2D8 |
 
 ## [Database design](https://tinyurl.com/2cz8mf74)
 
@@ -61,11 +59,10 @@ All the docs for each project are present in their respective directories in `do
 
 ![db design](./apps/server/docs/database/db-design.svg)
 
-
 ## Technologies
+
 1. Backend : Node js, Nestjs, PostgreSQL, Jest , Prisma.
 2. Frontend: React native, expo.
-
 
 ## Contributors ✨
 
