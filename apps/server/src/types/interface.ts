@@ -16,15 +16,7 @@
  * ```
  */
 export interface IResponseSuccess<t = any> {
-	status: "success";
+	statusCode: number;
 	message: string;
 	data?: t;
-}
-
-/**
- * Interface for the error response
- */
-export interface IResponseError {
-	status: "error";
-	error: string;
 }

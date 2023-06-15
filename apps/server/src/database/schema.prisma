@@ -1,7 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-
 generator client {
   provider = "prisma-client-js"
   binaryTargets = ["native", "linux-arm64-openssl-1.1.x"]
@@ -17,5 +16,12 @@ model User {
   email String @unique
   name String
   username String @unique
-  created_at DateTime
+  verified Boolean @default(false)
+  password String
+  verification_code Int
+  refresh_token String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([email, username])
 }

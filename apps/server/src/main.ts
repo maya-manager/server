@@ -2,7 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 
 import { config } from "dotenv";
-import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { ValidationPipe } from "@nestjs/common";
 
 let envFile: string;
 
@@ -19,16 +19,7 @@ config({ path: envFile });
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 	app.setGlobalPrefix("/v1");
-
-	const config = new DocumentBuilder()
-		.setTitle("Maya")
-		.setDescription(
-			"App to manage your pocket money and keep track of your expenses and account between multiple people",
-		)
-		.setVersion("1.0.0")
-		.build();
-	const document = SwaggerModule.createDocument(app, config);
-	SwaggerModule.setup("docs", app, document);
+	app.useGlobalPipes(new ValidationPipe());
 
 	await app.listen(process.env.PORT || 8000);
 }
