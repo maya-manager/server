@@ -20,6 +20,7 @@ export class MailerService {
 		to: string,
 		subject: string,
 		body: string,
+		attachments?: nodemailer.SendMailOptions["attachments"],
 	): Promise<nodemailer.SentMessageInfo> {
 		const environment = this.configService.get<string>("NODE_ENV");
 
@@ -52,6 +53,7 @@ export class MailerService {
 			to: to,
 			subject: subject,
 			html: body,
+			attachments: attachments,
 		});
 
 		if (environment === "development") {

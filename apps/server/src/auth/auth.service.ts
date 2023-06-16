@@ -4,6 +4,7 @@ import prisma from "../database/primsa";
 import { VerificationCodeService } from "../utils/verification-code/verification-code.service";
 import { genSalt, hash } from "bcrypt";
 import { MailerService } from "../utils/mailer/mailer.service";
+import path from "path";
 
 @Injectable()
 export class AuthService {
@@ -22,17 +23,19 @@ export class AuthService {
 
 		const verificationCode = this.verificationCodeService.generateCode();
 
-		// TODO: improve email template
 		// send verification email
-		const html = `
-            <h1>Verify your email</h1>
-            <p>Please enter this verification code in maya <b>${verificationCode}</b></p>
-        `;
 
 		await this.mailerService.sendEmail(
 			signupDto.email,
 			"Welcome to maya, please verify you'r email",
-			html,
+			this.emailTemplate(signupDto.name, verificationCode),
+			[
+				{
+					filename: "logo",
+					path: path.resolve("../../assets/logos/full.png"),
+					cid: "logo",
+				},
+			],
 		);
 
 		return await prisma.user.create({
@@ -59,5 +62,59 @@ export class AuthService {
 		const salt = await genSalt(10);
 
 		return await hash(password, salt);
+	}
+
+	emailTemplate(name: string, verificationCode: number) {
+		// eslint-disable-next-line no-secrets/no-secrets
+		return `	<style>
+			* {
+				padding: 0;
+				box-sizing: border-box;
+			}
+			.banner {
+				background-image: url(./Screenshot\ 2023-06-16\ at\ 1.03.21\ AM.png);
+				height: 100vh;
+				background-size: cover;
+				background-position: center;
+				overflow: hidden;
+				position: relative;
+			}
+			.banner .waves {
+				position: absolute;
+				width: 100%;
+				left: 0;
+                bottom: 0;
+			}
+            .header{
+                text-align: center;
+            }
+            .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #56BAA7;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    .img{
+        height: 250px;
+        width: 250px;
+    }
+		</style>
+
+		
+        
+<section class="banner">
+             <div class="header">
+            <h1>Welcome to Maya!</h1>
+            <h2>kindly verify your email here </h2>
+            <img class="img" height="500px" width="500px" src="cid:logo" alt="Logo">
+            <p> Dear ${name}<br>
+            Please enter this OTP in maya</p>
+            
+			<h3>OTP: ${verificationCode}</h3>
+
+        </div>
+		</section>`;
 	}
 }
