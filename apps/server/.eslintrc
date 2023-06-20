@@ -1,39 +1,45 @@
 {
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaVersion": 2020,
-    " project": "tsconfig.json",
-    "tsconfigRootDir": "__dirname",
-    "sourceType": "module"
-  },
-  "plugins": [],
-  "extends": ["plugin:node/recommended", "../../.eslintrc"],
-  "root": true,
-  "env": {
-    "es2021": true,
-    "node": true,
-    "jest": true
-  },
-  "settings": {
-    "import/resolver": {
-      "typescript": {}
-    }
-  },
-  "rules": {
-    "node/no-unpublished-import": "off",
-    "node/no-unsupported-features/es-syntax": "off",
-    "node/no-missing-import": [
-      "error",
-      {
-        "allowModules": [],
-        "resolvePaths": ["/path/to/a/modules/directory"],
-        "tryExtensions": [".js", ".ts", ".json", ".node"]
-      }
-    ],
-    "node/handle-callback-err": "error",
-    "node/no-path-concat": "error",
-    "node/no-process-exit": "error",
-    "node/global-require": "error",
-    "node/no-sync": "error"
-  }
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaVersion": 2020,
+		" project": "tsconfig.json",
+		"tsconfigRootDir": "__dirname",
+		"sourceType": "module"
+	},
+	"plugins": [],
+	"extends": ["plugin:node/recommended", "../../.eslintrc"],
+	"root": true,
+	"env": {
+		"es2021": true,
+		"node": true,
+		"jest": true
+	},
+	"settings": {
+		"import/resolver": {
+			"typescript": {}
+		}
+	},
+	"rules": {
+		"node/no-unpublished-import": "off",
+		"node/no-unsupported-features/es-syntax": "off",
+		"node/no-extraneous-import": [
+			"error",
+			{
+				"allowModules": ["express"]
+			}
+		],
+		"node/no-missing-import": [
+			"error",
+			{
+				"allowModules": [],
+				"resolvePaths": ["/path/to/a/modules/directory"],
+				"tryExtensions": [".js", ".ts", ".json", ".node"]
+			}
+		],
+		"node/handle-callback-err": "error",
+		"node/no-path-concat": "error",
+		"node/no-process-exit": "error",
+		"node/global-require": "error",
+		"node/no-sync": "error"
+	}
 }

@@ -1,8 +1,10 @@
-import { NestFactory } from "@nestjs/core";
+import { HttpAdapterHost, NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 
 import { config } from "dotenv";
 import { ValidationPipe } from "@nestjs/common";
+import { NestExpressApplication } from "@nestjs/platform-express";
+import { AllExceptionsFilter } from "./common/filters/allExceptions.filter";
 
 let envFile: string;
 
@@ -17,7 +19,7 @@ if (process.env.NODE_ENV === "production") {
 config({ path: envFile });
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule);
+	const app = await NestFactory.create<NestExpressApplication>(AppModule);
 	app.setGlobalPrefix("/v1");
 	app.useGlobalPipes(new ValidationPipe());
 
