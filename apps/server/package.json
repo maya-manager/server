@@ -16,7 +16,7 @@
 		"test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
 		"prisma:migrate": "prisma migrate dev --name \"init\" --preview-feature",
 		"prisma:generate": "prisma generate",
-		"prisma:studio": "prisma studio --schema ./src/database/schema.prisma"
+		"prisma:studio": "prisma studio --schema ./src/common/database/schema.prisma"
 	},
 	"dependencies": {
 		"@nestjs/common": "^10.0.0",
@@ -59,7 +59,7 @@
 		"typescript": "^5.0.0"
 	},
 	"prisma": {
-		"schema": "./src/database/schema.prisma"
+		"schema": "./src/common/database/schema.prisma"
 	},
 	"jest": {
 		"moduleFileExtensions": [

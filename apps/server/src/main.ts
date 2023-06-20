@@ -4,7 +4,7 @@ import { AppModule } from "./app.module";
 import { config } from "dotenv";
 import { ValidationPipe } from "@nestjs/common";
 import { NestExpressApplication } from "@nestjs/platform-express";
-import { AllExceptionsFilter } from "./common/filters/allExceptions.filter";
+import { AllExceptionsFilter } from "./filters/allExceptions.filter";
 
 let envFile: string;
 

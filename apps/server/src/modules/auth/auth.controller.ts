@@ -9,7 +9,7 @@ import {
 } from "@nestjs/common";
 import { SignupDto } from "./dto/signup.dto";
 import { AuthService } from "./auth.service";
-import { HttpExceptionsFilter } from "../common/filters/httpExceptions.filter";
+import { HttpExceptionsFilter } from "../../filters/httpExceptions.filter";
 
 @Controller("auth")
 export class AuthController {

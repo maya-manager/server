@@ -1,9 +1,9 @@
 import { ConflictException, Injectable, Logger } from "@nestjs/common";
 import { SignupDto } from "./dto/signup.dto";
-import prisma from "../database/primsa";
-import { VerificationCodeService } from "../utils/verification-code/verification-code.service";
+import prisma from "../../common/database/primsa";
+import { VerificationCodeService } from "../../utils/verification-code/verification-code.service";
 import { genSalt, hash } from "bcrypt";
-import { MailerService } from "../utils/mailer/mailer.service";
+import { MailerService } from "../../utils/mailer/mailer.service";
 import path from "path";
 
 @Injectable()
