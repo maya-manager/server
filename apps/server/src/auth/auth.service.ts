@@ -1,4 +1,4 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { ConflictException, Injectable, Logger } from "@nestjs/common";
 import { SignupDto } from "./dto/signup.dto";
 import prisma from "../database/primsa";
 import { VerificationCodeService } from "../utils/verification-code/verification-code.service";
@@ -19,6 +19,25 @@ export class AuthService {
 	 * @param signupDto Details of the user to be created
 	 */
 	async postSignup(signupDto: SignupDto) {
+		// check if user already exists
+
+		const existingUser = await prisma.user.findMany({
+			where: {
+				OR: [
+					{
+						email: signupDto.email,
+					},
+					{
+						username: signupDto.username,
+					},
+				],
+			},
+		});
+
+		if (existingUser.length > 0) {
+			throw new ConflictException("User with same email or username already exists");
+		}
+
 		const hashedPassword = await this.hashPassword(signupDto.password);
 
 		const verificationCode = this.verificationCodeService.generateCode();
@@ -64,6 +83,13 @@ export class AuthService {
 		return await hash(password, salt);
 	}
 
+	/**
+	 * Template for the email that will be sent to the user
+	 * on signup and this will contain the verification code
+	 *
+	 * @param name name of user to which email is to be sent
+	 * @param verificationCode the verification code to be sent
+	 */
 	emailTemplate(name: string, verificationCode: number) {
 		// eslint-disable-next-line no-secrets/no-secrets
 		return `	<style>

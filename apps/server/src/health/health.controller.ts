@@ -1,5 +1,5 @@
 import { Controller, Get, HttpStatus, InternalServerErrorException } from "@nestjs/common";
-import { IResponseSuccess } from "../types/interface";
+import { IResponseSuccess } from "../common/types/interface";
 import prisma from "../database/primsa";
 
 @Controller("health")

@@ -2,8 +2,6 @@ import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import nodemailer from "nodemailer";
 
-// TODO: update contributing guide to include instructions on how to set up nodemailer
-
 @Injectable()
 export class MailerService {
 	constructor(private readonly configService: ConfigService) {}
