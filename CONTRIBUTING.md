@@ -21,6 +21,9 @@ We'd also love PRs. If you're thinking of a large PR, we advise opening up an is
 5. Follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for writing commit messages
 6. Push to your fork and [submit a pull request][pr] in `main` branch
 7. Pat your self on the back and wait for your pull request to be approved and merged.
+8. If you have made any changes to the postman collection, please update the [postman collection](https://tinyurl.com/5ay7mh8s) and submit a pull request.
+
+> If you have any questions feel free to raise a new issue or ask in our [discord server](https://discord.com/invite/A2GdYbwAnw)
 
 Here are a few things you can do that will increase the likelihood of your pull request being accepted:
 
@@ -37,3 +40,4 @@ Work in Progress pull requests are also welcome to get feedback early on, or if 
 -   [Conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
 -   [Conventional commits vscode extension](https://marketplace.visualstudio.com/items?itemName=vivaxy.vscode-conventional-commits)
 -   [Github issues and pull requests vscode extension](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github)
+-   [Create pull requests in postman](https://learning.postman.com/docs/collaborating-in-postman/using-version-control/creating-pull-requests/#:~:text=Select%20Create%20pull%20request.,into%20your%20fork%20before%20merging.)

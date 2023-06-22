@@ -94,7 +94,11 @@ yarn start:dev
 docker-compose up
 ```
 
-## [Database design](https://tinyurl.com/2cz8mf74)
+### [Postman collection](https://tinyurl.com/5ay7mh8s)
+
+You can use this postman collection to test the api
+
+### [Database design](https://tinyurl.com/2cz8mf74)
 
 > :warning:
 > This database design is will be updated in future based on different needs
