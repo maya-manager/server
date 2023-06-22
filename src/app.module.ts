@@ -6,7 +6,7 @@ import { MailerModule } from "./utils/mailer/mailer.module";
 import { ConfigModule } from "@nestjs/config";
 import { APP_FILTER } from "@nestjs/core";
 import { AllExceptionsFilter } from "./filters/allExceptions.filter";
-import RequestLoggerMiddleware from "./middleware/RequestLogger";
+import RequestLoggerMiddleware from "./middleware/requestLogger.middleware";
 
 @Module({
 	imports: [
