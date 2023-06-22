@@ -3,17 +3,6 @@ description: "Found a security issue report it here"
 title: "security: <title>"
 labels: ["security"]
 body:
-  - type: dropdown
-    id: project
-    attributes:
-      label: Project
-      description: In which project this security issue is located?
-      options:
-        - "Client"
-        - "Server"
-        - "Core"
-    validations:
-      required: true
   - type: textarea
     id: description
     attributes:

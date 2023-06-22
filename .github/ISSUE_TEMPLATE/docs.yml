@@ -3,17 +3,6 @@ description: "Any issue related to documentation report it here!"
 title: "docs: <title>"
 labels: ["documentation"]
 body:
-  - type: dropdown
-    id: doc_type
-    attributes:
-      label: Project
-      description: In which project should we update or create new documentation?
-      options:
-        - "Client"
-        - "Server"
-        - "Core"
-    validations:
-      required: true
   - type: textarea
     id: description
     attributes:

@@ -1,37 +1,14 @@
 version: "3.8"
 services:
-    client:
-        container_name: client
-        restart: always
-        stdin_open: true
-        tty: true
-        build:
-            dockerfile: ./apps/client/Dockerfile
-        ports:
-            - 19000:19000
-            - 19001:19001
-            - 19002:19002
-            - 19006:19006
-        depends_on:
-            - server
-            - db
-        volumes:
-            - ./apps/client:/usr/src/app
-        environment:
-            - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
-
     server:
         container_name: server
         restart: always
-        build:
-            dockerfile: ./apps/server/Dockerfile
-
         ports:
             - ${SERVER_PORT}:${SERVER_PORT}
         depends_on:
             - db
         volumes:
-            - ./apps/server:/usr/src/app
+            - .:/usr/src/app
 
     db:
         container_name: postgres

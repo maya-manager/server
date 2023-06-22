@@ -14,6 +14,7 @@
 		"pii",
 		"no-unsanitized"
 	],
+	"root": true,
 	"extends": [
 		"google",
 		"prettier",
@@ -22,10 +23,13 @@
 		"plugin:pii/recommended",
 		"plugin:no-unsanitized/DOM",
 		"plugin:prettier/recommended",
-		"plugin:@typescript-eslint/recommended"
+		"plugin:@typescript-eslint/recommended",
+		"plugin:node/recommended"
 	],
 	"parserOptions": {
 		"ecmaVersion": 2020,
+		" project": "tsconfig.json",
+		"tsconfigRootDir": "__dirname",
 		"sourceType": "module"
 	},
 	"settings": {
@@ -86,6 +90,27 @@
 				"endOfLine": "auto",
 				"useTabs": true
 			}
-		]
+		],
+		"node/no-unpublished-import": "off",
+		"node/no-unsupported-features/es-syntax": "off",
+		"node/no-extraneous-import": [
+			"error",
+			{
+				"allowModules": ["express"]
+			}
+		],
+		"node/no-missing-import": [
+			"error",
+			{
+				"allowModules": [],
+				"resolvePaths": ["/path/to/a/modules/directory"],
+				"tryExtensions": [".js", ".ts", ".json", ".node"]
+			}
+		],
+		"node/handle-callback-err": "error",
+		"node/no-path-concat": "error",
+		"node/no-process-exit": "error",
+		"node/global-require": "error",
+		"node/no-sync": "error"
 	}
 }

@@ -3,17 +3,6 @@ description: "Suggest and idea for this project"
 title: "feat: <title>"
 labels: ["enhancement"]
 body:
-  - type: dropdown
-    id: feat_type
-    attributes:
-      label: Project
-      description: In which project do you want this feature to be implemented?
-      options:
-        - "Client"
-        - "Server"
-        - "Core"
-    validations:
-      required: true
   - type: textarea
     id: description
     attributes:

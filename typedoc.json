@@ -1,10 +1,6 @@
 {
 	// Comments are supported, like tsconfig.json
-	"entryPoints": [
-		"apps/client/src/**/*",
-		"apps/client/src/App.tsx",
-		"apps/server/src/**/*"
-	],
+	"entryPoints": ["src/**/*"],
 	"plugin": [
 		"typedoc-plugin-missing-exports",
 		"typedoc-plugin-zod",

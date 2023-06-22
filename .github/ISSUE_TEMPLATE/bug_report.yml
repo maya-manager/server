@@ -3,17 +3,6 @@ description: "File a bug/issue"
 title: "bug: <title>"
 labels: ["bug"]
 body:
-  - type: dropdown
-    id: bug_type
-    attributes:
-      label: Project
-      description: In which project this bug is located?
-      options:
-        - "Client"
-        - "Server"
-        - "Core"
-    validations:
-      required: true
   - type: textarea
     id: current_behavior
     attributes:
