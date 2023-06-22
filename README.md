@@ -55,26 +55,26 @@ All the docs for each project are present in their respective directories in `do
 
 ### Installation
 
-### Manually
+#### Manually
 
 1. Create a PostgreSQL database for the project.
 2. You will need to create a `.env` file in the root of the project. You can copy the `.env.example` file and rename it to `.env`.
 
 > make sure update the environment variables based on your needs.
 
-4. Create database migrations by running
+3. Create database migrations by running
 
 ```bash
 yarn prisma:migrate
 ```
 
-5. Generate the prisma client by running
+4. Generate the prisma client by running
 
 ```bash
 yarn prisma:generate
 ```
 
-6. Run the server by using
+5. Run the server by using
 
 ```bash
 yarn start:dev
@@ -88,7 +88,7 @@ yarn start:dev
 
 > make sure update the environment variables based on your needs.
 
-5. Run the containers by using
+3. Run the containers by using
 
 ```bash
 docker-compose up
