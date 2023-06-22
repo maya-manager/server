@@ -2,7 +2,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,macos,linux,node,react,reactnative,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,macos,linux,node,react,reactnative,windows
 
-docs
+
 migrations
 
 ### Linux ###
