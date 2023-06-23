@@ -10,7 +10,7 @@ import { Request, Response } from "express";
 
 @Catch(HttpException)
 export class HttpExceptionsFilter implements ExceptionFilter {
-	logger: Logger = new Logger("AllExceptionsFilter", { timestamp: true });
+	logger: Logger = new Logger("HTTP", { timestamp: true });
 
 	catch(exception: HttpException, host: ArgumentsHost): void {
 		const ctx = host.switchToHttp();
@@ -25,14 +25,10 @@ export class HttpExceptionsFilter implements ExceptionFilter {
 			error: HttpStatus[statusCode],
 		};
 
-		const { method, originalUrl, ip, headers, body } = request;
+		const { method, url, ip } = request;
 		const userAgent = request.get("user-agent");
 
-		this.logger.error(
-			`[${method}] ${originalUrl} ${statusCode}  userAgent: ${userAgent} ip: ${ip} message: ${message} headers: ${JSON.stringify(
-				headers,
-			)} body: ${JSON.stringify(body)}`,
-		);
+		this.logger.error(`${method} ${url} ${statusCode} - ${userAgent} ${ip}, ${exception}`);
 
 		response.status(statusCode).json(responseBody);
 	}

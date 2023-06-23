@@ -3,9 +3,9 @@ import { NextFunction, Request, Response } from "express";
 
 @Injectable()
 export default class RequestLoggerMiddleware implements NestMiddleware {
-    private logger: Logger = new Logger('HTTP')
-    use(req: Request, res: Response, done: NextFunction) {
-        const { ip, method, path: url } = req;
+	private logger: Logger = new Logger("HTTP");
+	use(req: Request, res: Response, done: NextFunction) {
+		const { ip, method, path: url } = req;
 		const userAgent = req.get("user-agent") || "";
 
 		res.on("close", () => {
@@ -15,5 +15,5 @@ export default class RequestLoggerMiddleware implements NestMiddleware {
 		});
 
 		done();
-    }
+	}
 }
