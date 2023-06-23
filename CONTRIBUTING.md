@@ -21,6 +21,9 @@ We'd also love PRs. If you're thinking of a large PR, we advise opening up an is
 5. Follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for writing commit messages
 6. Push to your fork and [submit a pull request][pr] in `main` branch
 7. Pat your self on the back and wait for your pull request to be approved and merged.
+8. If you have made any changes to the postman collection, please update the [postman collection](https://tinyurl.com/5ay7mh8s) and submit a pull request.
+
+> If you have any questions feel free to raise a new issue or ask in our [discord server](https://discord.com/invite/A2GdYbwAnw)
 
 Here are a few things you can do that will increase the likelihood of your pull request being accepted:
 
@@ -28,76 +31,6 @@ Here are a few things you can do that will increase the likelihood of your pull 
 -   Follow [Conventional commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
 Work in Progress pull requests are also welcome to get feedback early on, or if there is something blocked you. (just mark them as draft)
-
-## Setting up the development environment
-
-### Prerequisites
-
--   [Node.js](https://nodejs.org/en/)
--   [Yarn](https://yarnpkg.com/)
--   [PostgreSQL](https://www.postgresql.org/)
--   [Docker](https://www.docker.com/) (optional)
-
-> :memo: This project uses [Yarn workspaces](https://yarnpkg.com/features/workspaces) to manage multiple packages in a single repository. You will need to use Yarn to install the dependencies and run the scripts.
-
-### Installation
-
-#### _Server_
-
-1. Create a PostgreSQL database for the project.
-2. You will need to create a `.env` file in the root of the project. You can copy the `.env.example` file and rename it to `.env`.
-3. create another `.env` file inside `apps/server` directory. You can copy the `.env.example` file and rename it to `.env`.
-
-4. Create database migrations by running
-
-```bash
-yarn workspace @maya/server prisma:migrate
-```
-
-5. Generate the prisma client by running
-
-```bash
-yarn workspace @maya/server prisma:generate
-```
-
-6. Run the server by using
-
-```bash
-yarn workspace @maya/server start:dev
-```
-
-#### _Client_
-
-1. create another `.env` file inside `apps/client` directory. You can copy the `.env.example` file and rename it to `.env`.
-
-    > make sure update the environment variables based on your needs.
-
-1. Run the client by using
-
-```bash
-yarn workspace @maya/client start
-```
-
-#### Docker
-
-1. Use the `docker-compose.yml` file to start the server, client and postgreSQL containers.
-
-2. You will need to create a `.env` file in the root of the project. You can copy the `.env.example` file and rename it to `.env`.
-
-3. create another `.env` file inside `apps/server` directory. You can copy the `.env.example` file and rename it to `.env`.
-
-4. create another `.env` file inside `apps/client` directory. You can copy the `.env.example` file and rename it to `.env`.
-
-> make sure update the environment variables based on your needs.
-
-5. Run the containers by using
-
-```bash
-docker-compose up
-```
-
-> :warning: If you are using docker to run client than you need to manually put the `IP` address of your machine in the `expo` to run the app on your phone.
-> example if `IP` address of your machine is `192.172.36.18` than you expo url will be `exp://192.172.36.18:19000` and you will need to put this address in your emulator or phone in expo app.
 
 ## Resources
 
@@ -107,3 +40,4 @@ docker-compose up
 -   [Conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
 -   [Conventional commits vscode extension](https://marketplace.visualstudio.com/items?itemName=vivaxy.vscode-conventional-commits)
 -   [Github issues and pull requests vscode extension](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github)
+-   [Create pull requests in postman](https://learning.postman.com/docs/collaborating-in-postman/using-version-control/creating-pull-requests/#:~:text=Select%20Create%20pull%20request.,into%20your%20fork%20before%20merging.)

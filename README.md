@@ -5,7 +5,7 @@
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <div align="center">
-<img alt="logo" height="300" width="300" src="./assets/logos/full.svg" />
+<img alt="logo" height="300" width="300" src="./assets/logos/full.png" />
 </div>
 App to manage your pocket money and keep track of your expenses and account between multiple people
 
@@ -44,25 +44,74 @@ Calling all coding enthusiasts! If you want to be a part of our ongoing project,
 
 All the docs for each project are present in their respective directories in `docs` folder
 
-## Run locally
+## Setting up the development environment
 
-Check [CONTRIBUTING.md](./CONTRIBUTING.md) to know how to run the project locally
+### Prerequisites
 
-## UI Design
+-   [Node.js](https://nodejs.org/en/)
+-   [Yarn](https://yarnpkg.com/)
+-   [PostgreSQL](https://www.postgresql.org/)
+-   [Docker](https://www.docker.com/) (optional)
 
-[Figma URL](https://www.figma.com/file/ojtvKg3GqfcWxfQh8CPBFO/Maya?type=design&t=YiQRFjTrCGUL18Ic-1)
+### Installation
 
-## [Database design](https://tinyurl.com/2cz8mf74)
+#### Manually
+
+1. Create a PostgreSQL database for the project.
+2. You will need to create a `.env` file in the root of the project. You can copy the `.env.example` file and rename it to `.env`.
+
+> make sure update the environment variables based on your needs.
+
+3. Create database migrations by running
+
+```bash
+yarn prisma:migrate
+```
+
+4. Generate the prisma client by running
+
+```bash
+yarn prisma:generate
+```
+
+5. Run the server by using
+
+```bash
+yarn start:dev
+```
+
+#### Docker
+
+1. Use the `docker-compose.yml` file to start the server and postgreSQL containers.
+
+2. You will need to create a `.env` file in the root of the project. You can copy the `.env.example` file and rename it to `.env`.
+
+> make sure update the environment variables based on your needs.
+
+3. Run the containers by using
+
+```bash
+docker-compose up
+```
+
+### [Postman collection](https://tinyurl.com/5ay7mh8s)
+
+You can use this postman collection to test the api
+
+### [Database design](https://tinyurl.com/2cz8mf74)
 
 > :warning:
 > This database design is will be updated in future based on different needs
 
-![db design](./apps/server/docs/database/db-design.svg)
+![db design](./docs/database/db-design.png)
 
 ## Technologies
 
-1. Backend : Node js, Nestjs, PostgreSQL, Jest , Prisma.
-2. Frontend: React native, expo.
+-   [Node.js](https://nodejs.org/en/)
+-   [Nest.js](https://nestjs.com/)
+-   [PostgreSQL](https://www.postgresql.org/)
+-   [Prisma](https://www.prisma.io/)
+-   [TypeScript](https://www.typescriptlang.org/)
 
 ## Contributors ✨
 
