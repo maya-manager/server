@@ -1,6 +1,6 @@
 {
-  "projectName": "maya",
-  "projectOwner": "aayushchugh",
+  "projectName": "server",
+  "projectOwner": "maya-manager",
   "repoType": "github",
   "repoHost": "https://github.com",
   "files": [
@@ -40,6 +40,15 @@
       "profile": "https://github.com/DanielXing1103",
       "contributions": [
         "doc"
+      ]
+    },
+    {
+      "login": "BitOfAByte",
+      "name": "Toby",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40370496?v=4",
+      "profile": "https://github.com/BitOfAByte",
+      "contributions": [
+        "code"
       ]
     }
   ]
