@@ -92,55 +92,101 @@ export class AuthService {
 	 */
 	emailTemplate(name: string, verificationCode: number) {
 		// eslint-disable-next-line no-secrets/no-secrets
-		return `	<style>
-			* {
-				padding: 0;
-				box-sizing: border-box;
-			}
-			.banner {
-				background-image: url(./Screenshot\ 2023-06-16\ at\ 1.03.21\ AM.png);
-				height: 100vh;
-				background-size: cover;
-				background-position: center;
-				overflow: hidden;
-				position: relative;
-			}
-			.banner .waves {
-				position: absolute;
-				width: 100%;
-				left: 0;
-                bottom: 0;
-			}
-            .header{
-                text-align: center;
-            }
-            .button {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #56BAA7;
-            color: #ffffff;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-    .img{
-        height: 250px;
-        width: 250px;
-    }
-		</style>
+// 		return `	<style>
+// 			* {
+// 				padding: 0;
+// 				box-sizing: border-box;
+// 			}
+// 			.banner {
+// 				background-image: url(./Screenshot\ 2023-06-16\ at\ 1.03.21\ AM.png);
+// 				height: 100vh;
+// 				background-size: cover;
+// 				background-position: center;
+// 				overflow: hidden;
+// 				position: relative;
+// 			}
+// 			.banner .waves {
+// 				position: absolute;
+// 				width: 100%;
+// 				left: 0;
+//                 bottom: 0;
+// 			}
+//             .header{
+//                 text-align: center;
+//             }
+//             .button {
+//             display: inline-block;
+//             padding: 10px 20px;
+//             background-color: #56BAA7;
+//             color: #ffffff;
+//             text-decoration: none;
+//             border-radius: 5px;
+//         }
+//     .img{
+//         height: 250px;
+//         width: 250px;
+//     }
+// 		</style>
 
 		
         
-<section class="banner">
-             <div class="header">
-            <h1>Welcome to Maya!</h1>
-            <h2>kindly verify your email here </h2>
-            <img class="img" height="500px" width="500px" src="cid:logo" alt="Logo">
-            <p> Dear ${name}<br>
-            Please enter this OTP in maya</p>
+// <section class="banner">
+//              <div class="header">
+//             <h1>Welcome to Maya!</h1>
+//             <h2>kindly verify your email here </h2>
+//             <img class="img" height="500px" width="500px" src="cid:logo" alt="Logo">
+//             <p> Dear ${name}<br>
+//             Please enter this OTP in maya</p>
             
-			<h3>OTP: ${verificationCode}</h3>
+// 			<h3>OTP: ${verificationCode}</h3>
 
-        </div>
-		</section>`;
-	}
+//         </div>
+// 		</section>`;
+return `<h1
+		style="
+			 text-align: center;
+			margin-bottom: 20px;
+			color: #035e67;
+			background-image: url(./Untitled\ design.png);
+			background-position: center;
+			background-repeat: no-repeat; */
+		"
+	>
+		Welcome! <br />Email verification <br />
+	</h1>
+	<img
+		style="display: block; margin-left: auto; margin-right: auto; width: 20%"
+		src="./full-small.png"
+		alt=""
+	/>
+	<p style="margin-top: 0px; font-size: medium; text-align: center">
+		Dear user, <br />
+		<br />
+		Thank you for registring. Please click the the button below to verify your
+		email address
+	</p>
+	<p>
+		<a
+			href="#"
+			style="
+				align-items: center;
+				display: flex;
+				width: 7%;
+				padding: 10px 20px;
+				background-color: #56baa7;
+				text-decoration: none;
+				border-radius: 5px;
+				font-size: medium;
+				color: #ffffff;
+				justify-content: center;
+				margin-left: auto;
+				margin-right: auto;
+			"
+			>Verify email</a
+		>
+	</p>
+	<p style="text-align: center; color: #888888">
+		If you did not register on our site, please ignore this email.
+		<br />Regards, <br />maya
+	</p>`	}
 }
