@@ -2,12 +2,14 @@ import {
 	BadRequestException,
 	Body,
 	Controller,
+	Get,
 	HttpStatus,
 	Logger,
+	Param,
 	Post,
 	UseFilters,
 } from "@nestjs/common";
-import { SignupDto } from "./dto/signup.dto";
+import { SignupDto, VerifyAccountDto } from "./auth.dto";
 import { AuthService } from "./auth.service";
 import { HttpExceptionsFilter } from "../../filters/httpExceptions.filter";
 
@@ -38,6 +40,17 @@ export class AuthController {
 		return {
 			statusCode: HttpStatus.CREATED,
 			message: "user created and verification email sent successfully",
+		};
+	}
+
+	@Get("/verify/:email/:verification_code")
+	@UseFilters(HttpExceptionsFilter)
+	async getVerifyAccount(@Param() params: VerifyAccountDto) {
+		await this.authService.getVerifyAccount(params);
+
+		return {
+			statusCode: HttpStatus.OK,
+			message: "Account verified successfully",
 		};
 	}
 }

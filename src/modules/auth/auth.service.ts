@@ -1,5 +1,11 @@
-import { ConflictException, Injectable, Logger } from "@nestjs/common";
-import { SignupDto } from "./dto/signup.dto";
+import {
+	ConflictException,
+	Injectable,
+	Logger,
+	NotFoundException,
+	UnauthorizedException,
+} from "@nestjs/common";
+import { SignupDto, VerifyAccountDto } from "./auth.dto";
 import prisma from "../../common/database/primsa";
 import { VerificationCodeService } from "../../utils/verification-code/verification-code.service";
 import { genSalt, hash } from "bcrypt";
@@ -70,6 +76,28 @@ export class AuthService {
 				password: hashedPassword,
 				verification_code: verificationCode,
 			},
+		});
+	}
+
+	async getVerifyAccount(params: VerifyAccountDto) {
+		// get verification code from database
+		// and check if it matches the one sent by the user
+		// if it matches then verify the account
+		// else throw an error
+
+		const user = await prisma.user.findUnique({ where: { email: params.email } });
+
+		if (!user) {
+			throw new NotFoundException("Account with this email does not exists");
+		}
+
+		if (user.verification_code !== +params.verification_code) {
+			throw new UnauthorizedException("Invalid verification code");
+		}
+
+		return await prisma.user.update({
+			where: { email: params.email },
+			data: { verified: true, verification_code: 0 },
 		});
 	}
 
