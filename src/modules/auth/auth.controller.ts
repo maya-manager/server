@@ -40,4 +40,10 @@ export class AuthController {
 			message: "user created and verification email sent successfully",
 		};
 	}
+
+	@Post('/login')
+	@UseFilters(HttpExceptionsFilter)
+	async login(@Body() dto: SignupDto) {
+		return this.authService.postLogin(dto)
+	}
 }

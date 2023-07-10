@@ -1,10 +1,11 @@
-import { ConflictException, Injectable, Logger } from "@nestjs/common";
+import { Body, ConflictException, Injectable, Logger } from "@nestjs/common";
 import { SignupDto } from "./dto/signup.dto";
 import prisma from "../../common/database/primsa";
 import { VerificationCodeService } from "../../utils/verification-code/verification-code.service";
-import { genSalt, hash } from "bcrypt";
+import { genSalt, hash, compare } from "bcrypt";
 import { MailerService } from "../../utils/mailer/mailer.service";
 import path from "path";
+import { sign } from "jsonwebtoken";
 
 @Injectable()
 export class AuthService {
@@ -71,6 +72,14 @@ export class AuthService {
 				verification_code: verificationCode,
 			},
 		});
+	}
+
+	async postLogin({ username, email, password }: SignupDto) {
+		const user = await prisma.user.findFirst({ where: { email }})
+		if(!user) return "Invalid email or username"
+		const vaildPassword = await compare(password, user.password)
+		if(!vaildPassword) return "invalid password"
+		return `Welcome, ${username}`
 	}
 
 	/**
