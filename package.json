@@ -28,7 +28,7 @@
 		"prepare": "husky install"
 	},
 	"dependencies": {
-		"@nestjs/common": "^10.0.4",
+		"@nestjs/common": "^10.0.5",
 		"@nestjs/config": "^3.0.0",
 		"@nestjs/core": "^10.0.5",
 		"@prisma/client": "^4.16.2",
