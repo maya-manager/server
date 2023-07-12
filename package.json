@@ -70,7 +70,7 @@
 		"typedoc-plugin-missing-exports": "^2.0.0",
 		"typedoc-plugin-zod": "^1.0.2",
 		"typescript": "^5.1.6",
-		"@nestjs/cli": "^10.1.7",
+		"@nestjs/cli": "^10.1.8",
 		"@nestjs/schematics": "^10.0.0",
 		"@nestjs/testing": "^10.0.5",
 		"@types/bcrypt": "^5.0.0",
