@@ -13,15 +13,25 @@ datasource db {
 
 model User {
   id Int @id @default(autoincrement())
-  email String @unique
+  email String @unique 
   name String
   username String @unique
   verified Boolean @default(false)
   password String
   verification_code Int
-  refresh_token String?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
+
   @@index([email, username])
+}
+
+model Session {
+  id Int @id @default(autoincrement())
+  user_id Int
+  valid Boolean @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([user_id])
 }

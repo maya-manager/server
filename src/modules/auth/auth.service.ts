@@ -1,22 +1,30 @@
 import {
 	ConflictException,
+	HttpStatus,
 	Injectable,
 	Logger,
 	NotFoundException,
 	UnauthorizedException,
 } from "@nestjs/common";
-import { SignupDto, VerifyAccountDto } from "./auth.dto";
+import { LoginDto, SignupDto, VerifyAccountDto } from "./auth.dto";
 import prisma from "../../common/database/primsa";
 import { VerificationCodeService } from "../../utils/verification-code/verification-code.service";
-import { genSalt, hash } from "bcrypt";
+import { compare, genSalt, hash } from "bcrypt";
 import { MailerService } from "../../utils/mailer/mailer.service";
 import path from "path";
+import { Prisma, User } from "@prisma/client";
+import { ErrorService } from "../../utils/error/error.service";
+import { JwtService } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class AuthService {
 	constructor(
 		private readonly verificationCodeService: VerificationCodeService,
 		private readonly mailerService: MailerService,
+		private readonly errorService: ErrorService,
+		private readonly jwtService: JwtService,
+		private readonly configService: ConfigService,
 	) {}
 	logger: Logger = new Logger("AuthService", { timestamp: true });
 
@@ -25,31 +33,21 @@ export class AuthService {
 	 * @param signupDto Details of the user to be created
 	 */
 	async postSignup(signupDto: SignupDto) {
-		// check if user already exists
-
-		const existingUser = await prisma.user.findMany({
-			where: {
-				OR: [
-					{
-						email: signupDto.email,
-					},
-					{
-						username: signupDto.username,
-					},
-				],
-			},
-		});
-
-		if (existingUser.length > 0) {
-			throw new ConflictException("User with same email or username already exists");
-		}
-
 		const hashedPassword = await this.hashPassword(signupDto.password);
 
 		const verificationCode = this.verificationCodeService.generateCode();
 
-		// send verification email
+		const createdUser = await prisma.user.create({
+			data: {
+				name: signupDto.name,
+				email: signupDto.email,
+				username: signupDto.username,
+				password: hashedPassword,
+				verification_code: verificationCode,
+			},
+		});
 
+		// send verification email
 		await this.mailerService.sendEmail(
 			signupDto.email,
 			"Welcome to maya, please verify you'r email",
@@ -68,36 +66,104 @@ export class AuthService {
 			],
 		);
 
-		return await prisma.user.create({
-			data: {
-				name: signupDto.name,
-				email: signupDto.email,
-				username: signupDto.username,
-				password: hashedPassword,
-				verification_code: verificationCode,
-			},
-		});
+		return Promise.resolve(createdUser);
 	}
 
+	/**
+	 * Verify the user after signup
+	 * @param params params from the request
+	 */
 	async getVerifyAccount(params: VerifyAccountDto) {
-		// get verification code from database
-		// and check if it matches the one sent by the user
-		// if it matches then verify the account
-		// else throw an error
-
-		const user = await prisma.user.findUnique({ where: { email: params.email } });
-
-		if (!user) {
-			throw new NotFoundException("Account with this email does not exists");
-		}
+		const user = await prisma.user.findUniqueOrThrow({ where: { email: params.email } });
 
 		if (user.verification_code !== +params.verification_code) {
-			throw new UnauthorizedException("Invalid verification code");
+			return Promise.reject(
+				this.errorService.serviceAPIError(
+					"Invalid verification code",
+					HttpStatus.UNAUTHORIZED,
+				),
+			);
 		}
 
 		return await prisma.user.update({
 			where: { email: params.email },
 			data: { verified: true, verification_code: 0 },
+		});
+	}
+
+	/**
+	 * Create access and refresh tokens for the user
+	 *
+	 * also creates a session in database
+	 */
+	async postLogin(loginDto: LoginDto) {
+		/* 
+		  	TODO:
+			- generate access and refresh tokens
+			- create a session in database
+			- return the tokens
+		 */
+
+		let user: User;
+
+		// check if input is email or username
+		const isEmail = loginDto.email_username.includes("@");
+
+		if (isEmail) {
+			// find user with email
+			user = await prisma.user.findUniqueOrThrow({
+				where: {
+					email: loginDto.email_username,
+				},
+			});
+		} else {
+			// find user with username
+			user = await prisma.user.findUniqueOrThrow({
+				where: {
+					username: loginDto.email_username,
+				},
+			});
+		}
+
+		if (!user.verified) {
+			return Promise.reject(
+				this.errorService.serviceAPIError("User not verified", HttpStatus.FORBIDDEN),
+			);
+		}
+
+		// check if password is correct
+		const isPasswordCorrect = await compare(loginDto.password, user.password);
+
+		if (!isPasswordCorrect) {
+			return Promise.reject(
+				this.errorService.serviceAPIError("Invalid password", HttpStatus.UNAUTHORIZED),
+			);
+		}
+
+		this.createAccessAndRefreshTokens(user);
+
+		return user;
+	}
+
+	/**
+	 * Creates access and refresh tokens for the user
+	 * @param user The user for which the tokens are to be created
+	 */
+	async createAccessAndRefreshTokens(user: User) {
+		const accessTokenPublicKey = this.configService.get<string>("ACCESS_TOKEN_PUBLIC_KEY");
+		const refreshTokenPublicKey = this.configService.get<string>("REFRESH_TOKEN_PUBLIC_KEY");
+
+		// create a session in database
+		const session = prisma.session.create({
+			data: {
+				user_id: user.id,
+			},
+		});
+
+		// create access and refresh tokens
+		const accessToken = this.jwtService.signAsync(String(user.id), {
+			secret: accessTokenPublicKey,
+			expiresIn: "15m",
 		});
 	}
 
