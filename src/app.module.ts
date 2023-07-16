@@ -7,6 +7,7 @@ import { ConfigModule } from "@nestjs/config";
 import { APP_FILTER } from "@nestjs/core";
 import { AllExceptionsFilter } from "./filters/allExceptions.filter";
 import RequestLoggerMiddleware from "./middleware/requestLogger.middleware";
+import { ErrorModule } from "./utils/error/error.module";
 
 @Module({
 	imports: [
@@ -17,6 +18,7 @@ import RequestLoggerMiddleware from "./middleware/requestLogger.middleware";
 		AuthModule,
 		VerificationCodeModule,
 		MailerModule,
+		ErrorModule,
 	],
 	controllers: [],
 	providers: [
