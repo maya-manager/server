@@ -97,13 +97,6 @@ export class AuthService {
 	 * also creates a session in database
 	 */
 	async postLogin(loginDto: LoginDto) {
-		/* 
-		  	TODO:
-			- generate access and refresh tokens
-			- create a session in database
-			- return the tokens
-		 */
-
 		let user: User;
 
 		// check if input is email or username
