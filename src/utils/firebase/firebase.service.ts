@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { initializeApp } from "firebase/app";
 
 @Injectable()
@@ -33,6 +33,15 @@ export class FirebaseService {
 		};
 
 		return await uploadBytes(storageRef, buffer, metaData);
+	}
+
+	/**
+	 * Get the url of an image from firebase storage
+	 * @param filepath The name of file to get the url
+	 */
+	async getImageUrl(filepath: string) {
+		const storageRef = ref(this.storage, `${filepath}`);
+		return await getDownloadURL(storageRef);
 	}
 }
 

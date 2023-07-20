@@ -1,13 +1,18 @@
 import {
 	BadRequestException,
 	Body,
+	ConflictException,
 	Controller,
+	FileTypeValidator,
 	ForbiddenException,
 	Get,
 	HttpStatus,
+	InternalServerErrorException,
 	Logger,
+	MaxFileSizeValidator,
 	NotFoundException,
 	Param,
+	ParseFilePipe,
 	Post,
 	UnauthorizedException,
 	UploadedFile,
@@ -37,7 +42,23 @@ export class AuthController {
 	@Post("/signup")
 	@UseInterceptors(FileInterceptor("avatar"))
 	@UseFilters(HttpExceptionsFilter)
-	async postSignup(@Body() signupDto: SignupDto, @UploadedFile() avatar: Express.Multer.File) {
+	async postSignup(
+		@Body() signupDto: SignupDto,
+		@UploadedFile(
+			new ParseFilePipe({
+				validators: [
+					new FileTypeValidator({
+						fileType: new RegExp(/^image\//),
+					}),
+					new MaxFileSizeValidator({
+						maxSize: 5000,
+						message: "File can't be more than 5mb",
+					}),
+				],
+			}),
+		)
+		avatar: Express.Multer.File,
+	) {
 		try {
 			// TODO: resend verification email
 
@@ -53,8 +74,12 @@ export class AuthController {
 			};
 		} catch (err) {
 			if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
-				throw new BadRequestException("Account with this email or username already exists");
+				throw new ConflictException("Account with this email or username already exists");
 			}
+
+			this.logger.error(err);
+
+			return new InternalServerErrorException();
 		}
 	}
 
@@ -82,6 +107,10 @@ export class AuthController {
 			if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
 				throw new NotFoundException("Account with this email does not exists");
 			}
+
+			this.logger.error(err);
+
+			return new InternalServerErrorException();
 		}
 	}
 
@@ -114,6 +143,10 @@ export class AuthController {
 			if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
 				throw new NotFoundException("Account with this email or username does not exists");
 			}
+
+			this.logger.error(err);
+
+			return new InternalServerErrorException();
 		}
 	}
 }
