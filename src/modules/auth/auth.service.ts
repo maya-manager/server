@@ -16,6 +16,8 @@ import { Prisma, User } from "@prisma/client";
 import { ErrorService } from "../../utils/error/error.service";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
+import randomMC from "random-material-color";
+import { FirebaseService } from "../../utils/firebase/firebase.service";
 
 @Injectable()
 export class AuthService {
@@ -25,6 +27,7 @@ export class AuthService {
 		private readonly errorService: ErrorService,
 		private readonly jwtService: JwtService,
 		private readonly configService: ConfigService,
+		private readonly firebaseService: FirebaseService,
 	) {}
 	logger: Logger = new Logger("AuthService", { timestamp: true });
 
@@ -32,7 +35,7 @@ export class AuthService {
 	 * Create a new user in the database and send a verification email
 	 * @param signupDto Details of the user to be created
 	 */
-	async postSignup(signupDto: SignupDto) {
+	async postSignup(signupDto: SignupDto, avatar: Express.Multer.File) {
 		const hashedPassword = await this.hashPassword(signupDto.password);
 
 		const verificationCode = this.verificationCodeService.generateCode();
@@ -46,6 +49,32 @@ export class AuthService {
 				verification_code: verificationCode,
 			},
 		});
+
+		// create profile for the user
+		await prisma.profile.create({
+			data: {
+				user_id: createdUser.id,
+				avatar_color: randomMC.getColor(),
+			},
+		});
+
+		await prisma.user.update({
+			where: { id: createdUser.id },
+			data: { profile: { connect: { user_id: createdUser.id } } },
+		});
+
+		if (avatar) {
+			// upload avatar to firebase storage
+			const uploadedAvatar = await this.firebaseService.uploadFileBuffer(
+				avatar.buffer,
+				`${createdUser.username}-${createdUser.id}-${avatar.originalname}`,
+				{ contentType: avatar.mimetype },
+			);
+
+			console.log("====================================");
+			console.log(uploadedAvatar);
+			console.log("====================================");
+		}
 
 		// send verification email
 		await this.mailerService.sendEmail(

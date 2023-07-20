@@ -12,18 +12,30 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
+  id Int @id @default(autoincrement()) @unique
   email String @unique 
   name String
   username String @unique
   verified Boolean @default(false)
   password String
   verification_code Int
+  profile Profile?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-
   @@index([email, username])
+}
+
+model Profile {
+  id Int @id @default(autoincrement())
+  user_id Int @unique
+  avatar_url String?
+  avatar_color String
+  user User @relation(fields: [user_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([user_id])
 }
 
 model Session {

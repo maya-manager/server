@@ -10,12 +10,16 @@ import {
 	Param,
 	Post,
 	UnauthorizedException,
+	UploadedFile,
 	UseFilters,
+	UseInterceptors,
 } from "@nestjs/common";
 import { LoginDto, SignupDto, VerifyAccountDto } from "./auth.dto";
 import { AuthService } from "./auth.service";
 import { HttpExceptionsFilter } from "../../filters/httpExceptions.filter";
 import { Prisma } from "@prisma/client";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { Multer } from "multer";
 
 @Controller("auth")
 export class AuthController {
@@ -31,8 +35,9 @@ export class AuthController {
 	 * @param signupDto The body of the request
 	 */
 	@Post("/signup")
+	@UseInterceptors(FileInterceptor("avatar"))
 	@UseFilters(HttpExceptionsFilter)
-	async postSignup(@Body() signupDto: SignupDto) {
+	async postSignup(@Body() signupDto: SignupDto, @UploadedFile() avatar: Express.Multer.File) {
 		try {
 			// TODO: resend verification email
 
@@ -40,7 +45,7 @@ export class AuthController {
 				throw new BadRequestException("password and confirm password do not match");
 			}
 
-			await this.authService.postSignup(signupDto);
+			await this.authService.postSignup(signupDto, avatar);
 
 			return {
 				statusCode: HttpStatus.CREATED,

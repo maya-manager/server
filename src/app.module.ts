@@ -8,6 +8,7 @@ import { APP_FILTER } from "@nestjs/core";
 import { AllExceptionsFilter } from "./filters/allExceptions.filter";
 import RequestLoggerMiddleware from "./middleware/requestLogger.middleware";
 import { ErrorModule } from "./utils/error/error.module";
+import { FirebaseModule } from "./utils/firebase/firebase.module";
 
 @Module({
 	imports: [
@@ -19,6 +20,7 @@ import { ErrorModule } from "./utils/error/error.module";
 		VerificationCodeModule,
 		MailerModule,
 		ErrorModule,
+		FirebaseModule,
 	],
 	controllers: [],
 	providers: [
