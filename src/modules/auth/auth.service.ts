@@ -27,7 +27,6 @@ export class AuthService {
 		private readonly errorService: ErrorService,
 		private readonly jwtService: JwtService,
 		private readonly configService: ConfigService,
-		private readonly firebaseService: FirebaseService,
 	) {}
 	logger: Logger = new Logger("AuthService", { timestamp: true });
 
@@ -35,71 +34,58 @@ export class AuthService {
 	 * Create a new user in the database and send a verification email
 	 * @param signupDto Details of the user to be created
 	 */
-	async postSignup(signupDto: SignupDto, avatar: Express.Multer.File) {
-		const hashedPassword = await this.hashPassword(signupDto.password);
+	async postSignup(signupDto: SignupDto) {
+		try {
+			const hashedPassword = await this.hashPassword(signupDto.password);
 
-		const verificationCode = this.verificationCodeService.generateCode();
+			const verificationCode = this.verificationCodeService.generateCode();
 
-		const createdUser = await prisma.user.create({
-			data: {
-				name: signupDto.name,
-				email: signupDto.email,
-				username: signupDto.username,
-				password: hashedPassword,
-				verification_code: verificationCode,
-			},
-		});
-
-		// create profile for the user
-		await prisma.profile.create({
-			data: {
-				user_id: createdUser.id,
-				avatar_color: randomMC.getColor(),
-			},
-		});
-
-		await prisma.user.update({
-			where: { id: createdUser.id },
-			data: { profile: { connect: { user_id: createdUser.id } } },
-		});
-
-		if (avatar) {
-			// upload avatar to firebase storage
-			const uploadedAvatar = await this.firebaseService.uploadFileBuffer(
-				avatar.buffer,
-				`${createdUser.username}-${createdUser.id}-${avatar.originalname}`,
-				{ contentType: avatar.mimetype },
-			);
-
-			// update avatar url in database
-			await prisma.profile.update({
-				where: { user_id: createdUser.id },
+			const createdUser = await prisma.user.create({
 				data: {
-					avatar_url: await this.firebaseService.getImageUrl(uploadedAvatar.ref.fullPath),
+					name: signupDto.name,
+					email: signupDto.email,
+					username: signupDto.username,
+					password: hashedPassword,
+					verification_code: verificationCode,
 				},
 			});
+
+			// create profile for the user
+			await prisma.profile.create({
+				data: {
+					user_id: createdUser.id,
+					avatar_color: randomMC.getColor(),
+				},
+			});
+
+			await prisma.user.update({
+				where: { id: createdUser.id },
+				data: { profile: { connect: { user_id: createdUser.id } } },
+			});
+
+			// send verification email
+			await this.mailerService.sendEmail(
+				signupDto.email,
+				"Welcome to maya, please verify you'r email",
+				this.emailTemplate(signupDto.name, verificationCode),
+				[
+					{
+						filename: "logo",
+						path: path.resolve("./assets/logos/full.png"),
+						cid: "logo",
+					},
+					{
+						filename: "banner",
+						path: path.resolve("./assets/logos/banner.png"),
+						cid: "banner",
+					},
+				],
+			);
+
+			return Promise.resolve(createdUser);
+		} catch (err) {
+			return Promise.reject(err);
 		}
-
-		// send verification email
-		await this.mailerService.sendEmail(
-			signupDto.email,
-			"Welcome to maya, please verify you'r email",
-			this.emailTemplate(signupDto.name, verificationCode),
-			[
-				{
-					filename: "logo",
-					path: path.resolve("./assets/logos/full.png"),
-					cid: "logo",
-				},
-				{
-					filename: "banner",
-					path: path.resolve("./assets/logos/banner.png"),
-					cid: "banner",
-				},
-			],
-		);
-
-		return Promise.resolve(createdUser);
 	}
 
 	/**
@@ -107,21 +93,27 @@ export class AuthService {
 	 * @param params params from the request
 	 */
 	async getVerifyAccount(params: VerifyAccountDto) {
-		const user = await prisma.user.findUniqueOrThrow({ where: { email: params.email } });
+		try {
+			const user = await prisma.user.findUniqueOrThrow({ where: { email: params.email } });
 
-		if (user.verification_code !== +params.verification_code) {
-			return Promise.reject(
-				this.errorService.serviceAPIError(
-					"Invalid verification code",
-					HttpStatus.UNAUTHORIZED,
-				),
-			);
+			if (user.verification_code !== +params.verification_code) {
+				return Promise.reject(
+					this.errorService.serviceAPIError(
+						"Invalid verification code",
+						HttpStatus.UNAUTHORIZED,
+					),
+				);
+			}
+
+			const updatedUser = await prisma.user.update({
+				where: { email: params.email },
+				data: { verified: true, verification_code: 0 },
+			});
+
+			return Promise.resolve(updatedUser);
+		} catch (err) {
+			return Promise.reject(err);
 		}
-
-		return await prisma.user.update({
-			where: { email: params.email },
-			data: { verified: true, verification_code: 0 },
-		});
 	}
 
 	/**
@@ -130,48 +122,52 @@ export class AuthService {
 	 * also creates a session in database
 	 */
 	async postLogin(loginDto: LoginDto) {
-		let user: User;
+		try {
+			let user: User;
 
-		// check if input is email or username
-		const isEmail = loginDto.email_username.includes("@");
+			// check if input is email or username
+			const isEmail = loginDto.email_username.includes("@");
 
-		if (isEmail) {
-			// find user with email
-			user = await prisma.user.findUniqueOrThrow({
-				where: {
-					email: loginDto.email_username,
-				},
+			if (isEmail) {
+				// find user with email
+				user = await prisma.user.findUniqueOrThrow({
+					where: {
+						email: loginDto.email_username,
+					},
+				});
+			} else {
+				// find user with username
+				user = await prisma.user.findUniqueOrThrow({
+					where: {
+						username: loginDto.email_username,
+					},
+				});
+			}
+
+			if (!user.verified) {
+				return Promise.reject(
+					this.errorService.serviceAPIError("User not verified", HttpStatus.FORBIDDEN),
+				);
+			}
+
+			// check if password is correct
+			const isPasswordCorrect = await compare(loginDto.password, user.password);
+
+			if (!isPasswordCorrect) {
+				return Promise.reject(
+					this.errorService.serviceAPIError("Invalid password", HttpStatus.UNAUTHORIZED),
+				);
+			}
+
+			const tokens = await this.createAccessAndRefreshTokens(user);
+
+			return Promise.resolve({
+				access_token: tokens.accessToken,
+				refresh_token: tokens.refreshToken,
 			});
-		} else {
-			// find user with username
-			user = await prisma.user.findUniqueOrThrow({
-				where: {
-					username: loginDto.email_username,
-				},
-			});
+		} catch (err) {
+			return Promise.reject(err);
 		}
-
-		if (!user.verified) {
-			return Promise.reject(
-				this.errorService.serviceAPIError("User not verified", HttpStatus.FORBIDDEN),
-			);
-		}
-
-		// check if password is correct
-		const isPasswordCorrect = await compare(loginDto.password, user.password);
-
-		if (!isPasswordCorrect) {
-			return Promise.reject(
-				this.errorService.serviceAPIError("Invalid password", HttpStatus.UNAUTHORIZED),
-			);
-		}
-
-		const tokens = await this.createAccessAndRefreshTokens(user);
-
-		return {
-			access_token: tokens.accessToken,
-			refresh_token: tokens.refreshToken,
-		};
 	}
 
 	/**
@@ -179,37 +175,45 @@ export class AuthService {
 	 * @param user The user for which the tokens are to be created
 	 */
 	async createAccessAndRefreshTokens(user: User) {
-		const accessTokenPrivateKey = this.configService.get<string>("ACCESS_TOKEN_PRIVATE_KEY");
-		const refreshTokenPrivateKey = this.configService.get<string>("REFRESH_TOKEN_PRIVATE_KEY");
+		try {
+			const accessTokenPrivateKey = this.configService.get<string>(
+				"ACCESS_TOKEN_PRIVATE_KEY",
+			);
+			const refreshTokenPrivateKey = this.configService.get<string>(
+				"REFRESH_TOKEN_PRIVATE_KEY",
+			);
 
-		// create a session in database
-		const session = await prisma.session.create({
-			data: {
-				user_id: user.id,
-			},
-		});
+			// create a session in database
+			const session = await prisma.session.create({
+				data: {
+					user_id: user.id,
+				},
+			});
 
-		// create access and refresh tokens
-		const accessToken = await this.jwtService.signAsync(
-			{ user_id: user.id },
-			{
-				privateKey: accessTokenPrivateKey,
-				expiresIn: "15m",
-			},
-		);
+			// create access and refresh tokens
+			const accessToken = await this.jwtService.signAsync(
+				{ user_id: user.id },
+				{
+					privateKey: accessTokenPrivateKey,
+					expiresIn: "15m",
+				},
+			);
 
-		const refreshToken = await this.jwtService.signAsync(
-			{ session_id: session.id },
-			{
-				privateKey: refreshTokenPrivateKey,
-				expiresIn: "7d",
-			},
-		);
+			const refreshToken = await this.jwtService.signAsync(
+				{ session_id: session.id },
+				{
+					privateKey: refreshTokenPrivateKey,
+					expiresIn: "7d",
+				},
+			);
 
-		return {
-			accessToken,
-			refreshToken,
-		};
+			return Promise.resolve({
+				accessToken,
+				refreshToken,
+			});
+		} catch (err) {
+			return Promise.reject(err);
+		}
 	}
 
 	/**

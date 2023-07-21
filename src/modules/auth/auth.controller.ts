@@ -3,28 +3,18 @@ import {
 	Body,
 	ConflictException,
 	Controller,
-	FileTypeValidator,
 	ForbiddenException,
 	Get,
 	HttpStatus,
-	InternalServerErrorException,
 	Logger,
-	MaxFileSizeValidator,
 	NotFoundException,
 	Param,
-	ParseFilePipe,
 	Post,
 	UnauthorizedException,
-	UploadedFile,
-	UseFilters,
-	UseInterceptors,
 } from "@nestjs/common";
 import { LoginDto, SignupDto, VerifyAccountDto } from "./auth.dto";
 import { AuthService } from "./auth.service";
-import { HttpExceptionsFilter } from "../../filters/httpExceptions.filter";
 import { Prisma } from "@prisma/client";
-import { FileInterceptor } from "@nestjs/platform-express";
-import { Multer } from "multer";
 
 @Controller("auth")
 export class AuthController {
@@ -40,25 +30,7 @@ export class AuthController {
 	 * @param signupDto The body of the request
 	 */
 	@Post("/signup")
-	@UseInterceptors(FileInterceptor("avatar"))
-	@UseFilters(HttpExceptionsFilter)
-	async postSignup(
-		@Body() signupDto: SignupDto,
-		@UploadedFile(
-			new ParseFilePipe({
-				validators: [
-					new FileTypeValidator({
-						fileType: new RegExp(/^image\//),
-					}),
-					new MaxFileSizeValidator({
-						maxSize: 5000,
-						message: "File can't be more than 5mb",
-					}),
-				],
-			}),
-		)
-		avatar: Express.Multer.File,
-	) {
+	async postSignup(@Body() signupDto: SignupDto) {
 		try {
 			// TODO: resend verification email
 
@@ -66,20 +38,18 @@ export class AuthController {
 				throw new BadRequestException("password and confirm password do not match");
 			}
 
-			await this.authService.postSignup(signupDto, avatar);
+			await this.authService.postSignup(signupDto);
 
 			return {
 				statusCode: HttpStatus.CREATED,
 				message: "user created and verification email sent successfully",
 			};
-		} catch (err) {
+		} catch (err: any) {
 			if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
 				throw new ConflictException("Account with this email or username already exists");
 			}
 
-			this.logger.error(err);
-
-			return new InternalServerErrorException();
+			throw new Error(err);
 		}
 	}
 
@@ -90,7 +60,6 @@ export class AuthController {
 	 * @param params The params of the request
 	 */
 	@Get("/verify/:email/:verification_code")
-	@UseFilters(HttpExceptionsFilter)
 	async getVerifyAccount(@Param() params: VerifyAccountDto) {
 		try {
 			await this.authService.getVerifyAccount(params);
@@ -108,9 +77,7 @@ export class AuthController {
 				throw new NotFoundException("Account with this email does not exists");
 			}
 
-			this.logger.error(err);
-
-			return new InternalServerErrorException();
+			throw new Error(err);
 		}
 	}
 
@@ -120,7 +87,6 @@ export class AuthController {
 	 * Logins user with access and refresh tokens
 	 */
 	@Post("/login")
-	@UseFilters(HttpExceptionsFilter)
 	async postLogin(@Body() loginDto: LoginDto) {
 		try {
 			const tokens = await this.authService.postLogin(loginDto);
@@ -146,7 +112,7 @@ export class AuthController {
 
 			this.logger.error(err);
 
-			return new InternalServerErrorException();
+			throw new Error(err);
 		}
 	}
 }

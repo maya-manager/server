@@ -5,6 +5,7 @@ import { config } from "dotenv";
 import { ValidationPipe } from "@nestjs/common";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { AllExceptionsFilter } from "./filters/allExceptions.filter";
+import { HttpExceptionsFilter } from "./filters/httpExceptions.filter";
 
 let envFile: string;
 
@@ -21,6 +22,7 @@ config({ path: envFile });
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule);
 	app.setGlobalPrefix("/v1");
+	app.useGlobalFilters(new HttpExceptionsFilter());
 	app.useGlobalPipes(new ValidationPipe());
 
 	await app.listen(process.env.PORT || 8000);
