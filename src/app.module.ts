@@ -11,6 +11,7 @@ import { ErrorModule } from "./utils/error/error.module";
 import { FirebaseModule } from "./utils/firebase/firebase.module";
 import { HttpExceptionsFilter } from "./filters/httpExceptions.filter";
 import { UserModule } from "./modules/user/user.module";
+import { JwtModule } from "./utils/jwt/jwt.module";
 
 @Module({
 	imports: [
@@ -24,6 +25,7 @@ import { UserModule } from "./modules/user/user.module";
 		MailerModule,
 		ErrorModule,
 		FirebaseModule,
+		JwtModule,
 	],
 	controllers: [],
 })

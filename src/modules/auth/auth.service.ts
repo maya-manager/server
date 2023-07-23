@@ -14,10 +14,9 @@ import { MailerService } from "../../utils/mailer/mailer.service";
 import path from "path";
 import { Prisma, User } from "@prisma/client";
 import { ErrorService } from "../../utils/error/error.service";
-import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import randomMC from "random-material-color";
-import { FirebaseService } from "../../utils/firebase/firebase.service";
+import { JwtService } from "../../utils/jwt/jwt.service";
 
 @Injectable()
 export class AuthService {
@@ -34,7 +33,7 @@ export class AuthService {
 	 * Create a new user in the database and send a verification email
 	 * @param signupDto Details of the user to be created
 	 */
-	async postSignup(signupDto: SignupDto) {
+	public async postSignup(signupDto: SignupDto) {
 		try {
 			const hashedPassword = await this.hashPassword(signupDto.password);
 
@@ -92,7 +91,7 @@ export class AuthService {
 	 * Verify the user after signup
 	 * @param params params from the request
 	 */
-	async getVerifyAccount(params: VerifyAccountDto) {
+	public async getVerifyAccount(params: VerifyAccountDto) {
 		try {
 			const user = await prisma.user.findUniqueOrThrow({ where: { email: params.email } });
 
@@ -121,7 +120,7 @@ export class AuthService {
 	 *
 	 * also creates a session in database
 	 */
-	async postLogin(loginDto: LoginDto) {
+	public async postLogin(loginDto: LoginDto) {
 		try {
 			let user: User;
 
@@ -174,15 +173,8 @@ export class AuthService {
 	 * Creates access and refresh tokens for the user
 	 * @param user The user for which the tokens are to be created
 	 */
-	async createAccessAndRefreshTokens(user: User) {
+	private async createAccessAndRefreshTokens(user: User) {
 		try {
-			const accessTokenPrivateKey = this.configService.get<string>(
-				"ACCESS_TOKEN_PRIVATE_KEY",
-			);
-			const refreshTokenPrivateKey = this.configService.get<string>(
-				"REFRESH_TOKEN_PRIVATE_KEY",
-			);
-
 			// create a session in database
 			const session = await prisma.session.create({
 				data: {
@@ -191,20 +183,10 @@ export class AuthService {
 			});
 
 			// create access and refresh tokens
-			const accessToken = await this.jwtService.signAsync(
-				{ user_id: user.id },
-				{
-					privateKey: accessTokenPrivateKey,
-					expiresIn: "15m",
-				},
-			);
-
-			const refreshToken = await this.jwtService.signAsync(
+			const accessToken = await this.jwtService.signToken({ user_id: user.id }, "access");
+			const refreshToken = await this.jwtService.signToken(
 				{ session_id: session.id },
-				{
-					privateKey: refreshTokenPrivateKey,
-					expiresIn: "7d",
-				},
+				"refresh",
 			);
 
 			return Promise.resolve({
@@ -225,7 +207,7 @@ export class AuthService {
 	 * const hashedPassword = await this.authService.hashPassword("password");
 	 * ```
 	 */
-	async hashPassword(password: string): Promise<string> {
+	private async hashPassword(password: string): Promise<string> {
 		const salt = await genSalt(10);
 
 		return await hash(password, salt);
@@ -238,7 +220,7 @@ export class AuthService {
 	 * @param name name of user to which email is to be sent
 	 * @param verificationCode the verification code to be sent
 	 */
-	emailTemplate(name: string, verificationCode: number) {
+	private emailTemplate(name: string, verificationCode: number) {
 		// eslint-disable-next-line no-secrets/no-secrets
 		return `
 		<img src="cid:banner" alt="banner" style="
