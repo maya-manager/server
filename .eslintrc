@@ -50,6 +50,7 @@
 		"valid-jsdoc": "off",
 		"no-secrets/no-secrets": "error",
 		"pii/no-email": "error",
+		"prefer-promise-reject-errors": "off",
 		"no-invalid-this": "off",
 		"spaced-comment": "off",
 		"prefer-destructuring": ["error", { "object": true, "array": true }],

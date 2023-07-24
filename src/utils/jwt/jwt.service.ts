@@ -9,25 +9,35 @@ export class JwtService {
 		private readonly jwtService: JwtServiceNest,
 	) {}
 
-	public async signToken(payload: any, type: "access" | "refresh") {
-		try {
-			const accessTokenPrivateKey = this.configService.get<string>(
-				"ACCESS_TOKEN_PRIVATE_KEY",
-			);
-			const refreshTokenPrivateKey = this.configService.get<string>(
-				"REFRESH_TOKEN_PRIVATE_KEY",
-			);
+	private readonly accessTokenPrivateKey = this.configService.get<string>(
+		"ACCESS_TOKEN_PRIVATE_KEY",
+	);
+	private readonly accessTokenPublicKey =
+		this.configService.get<string>("ACCESS_TOKEN_PUBLIC_KEY");
+	private readonly refreshTokenPrivateKey = this.configService.get<string>(
+		"REFRESH_TOKEN_PRIVATE_KEY",
+	);
+	private readonly refreshTokenPublicKey = this.configService.get<string>(
+		"REFRESH_TOKEN_PUBLIC_KEY",
+	);
 
+	/**
+	 * Sign given payload into JWT token
+	 * @param payload data to be signed in the JWT
+	 * @param type which type of token to be signed
+	 */
+	public async signToken(payload: any, type: "access" | "refresh"): Promise<string> {
+		try {
 			if (type === "access") {
 				const accessToken = await this.jwtService.signAsync(payload, {
-					privateKey: accessTokenPrivateKey,
+					privateKey: this.accessTokenPrivateKey,
 					expiresIn: "15m",
 				});
 
 				return Promise.resolve(accessToken);
 			} else if (type === "refresh") {
 				const refreshToken = await this.jwtService.signAsync(payload, {
-					privateKey: refreshTokenPrivateKey,
+					privateKey: this.refreshTokenPrivateKey,
 					expiresIn: "7d",
 				});
 
@@ -37,4 +47,29 @@ export class JwtService {
 			Promise.reject(err);
 		}
 	}
+
+	public async verifyToken(token: string, type: "accessToken" | "refreshToken") {
+		try {
+			let decodedToken: DecodedToken;
+
+			if (type === "accessToken") {
+				decodedToken = await this.jwtService.verifyAsync<DecodedToken>(token, {
+					publicKey: this.accessTokenPublicKey,
+				});
+			} else if (type === "refreshToken") {
+				decodedToken = await this.jwtService.verifyAsync<DecodedToken>(token, {
+					publicKey: this.refreshTokenPublicKey,
+				});
+			}
+			return Promise.resolve(decodedToken);
+		} catch (err) {
+			return Promise.reject(false);
+		}
+	}
+}
+
+interface DecodedToken {
+	user_id: string;
+	iat: number;
+	exp: number;
 }
