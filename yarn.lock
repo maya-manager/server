@@ -889,10 +889,10 @@
     "@types/jsonwebtoken" "9.0.1"
     jsonwebtoken "9.0.0"
 
-"@nestjs/platform-express@^10.1.0":
-  version "10.1.0"
-  resolved "https://registry.yarnpkg.com/@nestjs/platform-express/-/platform-express-10.1.0.tgz#f57bf13b484a3899762d70b0ce59d9249a7ced10"
-  integrity sha512-wl3gsad9Zsv+Im8Fl+meXwpzPLNFRlLbrepGL6Y8za35xXsdx74oCv7NJbjptHMYdwzTZHvbyprfSxV+oHUaXg==
+"@nestjs/platform-express@^10.1.1":
+  version "10.1.1"
+  resolved "https://registry.yarnpkg.com/@nestjs/platform-express/-/platform-express-10.1.1.tgz#3573214210e3ecda85e426aad00c8b0fd61c8aca"
+  integrity sha512-IqVHAn7K/P50v1dCinedxEbAOF7W4ijiGe9EmRn237BaCrlQZzgLX/N5P0mJb57DoRClxIsDr4NjvGar627Feg==
   dependencies:
     body-parser "1.20.2"
     cors "2.8.5"
