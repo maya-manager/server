@@ -1,14 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { initializeApp } from "firebase/app";
 
 @Injectable()
 export class FirebaseService {
 	constructor(private readonly configService: ConfigService) {}
 
-	private config = {
+	private readonly config = {
 		apiKey: this.configService.get<string>("FIREBASE_API_KEY"),
 		authDomain: this.configService.get<string>("FIREBASE_AUTH_DOMAIN"),
 		projectId: this.configService.get<string>("FIREBASE_PROJECT_ID"),
@@ -18,15 +18,19 @@ export class FirebaseService {
 		measurementId: this.configService.get<string>("FIREBASE_MEASUREMENT_ID"),
 	};
 
-	private firebaseApp = initializeApp(this.config);
-	private storage = getStorage(this.firebaseApp, this.firebaseApp.options.storageBucket);
+	private readonly firebaseApp = initializeApp(this.config);
+	private readonly storage = getStorage(this.firebaseApp, this.firebaseApp.options.storageBucket);
 
 	/**
 	 * Upload a file buffer to firebase storage
 	 * @param buffer image buffer
 	 * @param filename image filename
 	 */
-	async uploadFileBuffer(buffer: Buffer, filename: string, options: UploadFileBufferOptions) {
+	public async uploadImageBuffer(
+		buffer: Buffer,
+		filename: string,
+		options: UploadFileBufferOptions,
+	) {
 		const storageRef = ref(this.storage, `images/${filename}`);
 		const metaData = {
 			contentType: options.contentType,
@@ -39,9 +43,18 @@ export class FirebaseService {
 	 * Get the url of an image from firebase storage
 	 * @param filepath The name of file to get the url
 	 */
-	async getImageUrl(filepath: string) {
+	public async getFileUrl(filepath: string) {
 		const storageRef = ref(this.storage, `${filepath}`);
 		return await getDownloadURL(storageRef);
+	}
+
+	/**
+	 * Delete an image from firebase storage
+	 * @param filename Name of file which will be deleted from firebase storage
+	 */
+	public async deleteImage(filename: string) {
+		const storageRef = ref(this.storage, `images/${filename}`);
+		return await deleteObject(storageRef);
 	}
 }
 

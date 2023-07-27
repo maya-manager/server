@@ -2,15 +2,16 @@ import {
 	Controller,
 	HttpStatus,
 	InternalServerErrorException,
-	Param,
 	ParseFilePipeBuilder,
 	Patch,
+	Res,
 	UploadedFile,
 	UseInterceptors,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { Multer } from "multer";
+import { Response } from "express";
 
 @Controller("user")
 export class UserController {
@@ -19,7 +20,7 @@ export class UserController {
 	@Patch("/profile/avatar")
 	@UseInterceptors(FileInterceptor("avatar"))
 	async patchAvatar(
-		@Param("id") id: string,
+		@Res() res: Response,
 		@UploadedFile(
 			new ParseFilePipeBuilder()
 				.addFileTypeValidator({ fileType: new RegExp(/^image\//) })
@@ -31,7 +32,12 @@ export class UserController {
 		avatar: Express.Multer.File,
 	) {
 		try {
-			await this.userService.patchAvatar(avatar);
+			await this.userService.patchAvatar(avatar, res);
+
+			return res.status(HttpStatus.OK).json({
+				status: HttpStatus.OK,
+				message: "Avatar updated successfully",
+			});
 		} catch (err) {
 			throw new InternalServerErrorException();
 		}
