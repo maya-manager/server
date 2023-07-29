@@ -911,12 +911,12 @@
     jsonc-parser "3.2.0"
     pluralize "8.0.0"
 
-"@nestjs/testing@^10.1.0":
-  version "10.1.0"
-  resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-10.1.0.tgz#f40a79df1a2bd01c7363c1d1d212a22481eb5c17"
-  integrity sha512-TqV/21PuU5GJ543oqLTrmQhWUiWwB7DDRcj5cknUdaOst+Kkwp0Sad3/5svcWgOB+QfFbwYlvIDeCkKJshZzPg==
+"@nestjs/testing@^10.1.2":
+  version "10.1.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-10.1.2.tgz#54c879b7ab2a244b4a42d85b822e233484877e47"
+  integrity sha512-047SBcHxHNj/u/YEBTShaM3ijqjp+I8gbBy/sO18tGI0lHBdQztC6zLfIHddrF3rS2/fBLkES+/kemhkVlkpwQ==
   dependencies:
-    tslib "2.6.0"
+    tslib "2.6.1"
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
