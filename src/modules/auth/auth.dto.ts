@@ -22,11 +22,18 @@ export class SignupDto {
 	cpassword: string;
 }
 
-export class VerifyAccountDto {
+export class VerifyAccountParams {
 	@IsEmail({}, { message: "Email is not valid" })
 	email: string;
+}
 
-	verification_code: number;
+export class VerifyAccountQuery {
+	vc: number;
+}
+
+export class ResendVerificationEmailParams {
+	@IsEmail({}, { message: "Email is not valid" })
+	email: string;
 }
 
 export class LoginDto {

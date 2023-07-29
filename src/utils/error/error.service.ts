@@ -8,7 +8,7 @@ export class ErrorService {
 	 * @param message message to be sent to the user
 	 * @param code error code
 	 */
-	serviceAPIError(message: string, code: number) {
+	APIError(message: string, code: number) {
 		return { message, code };
 	}
 }

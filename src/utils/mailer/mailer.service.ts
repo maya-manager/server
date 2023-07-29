@@ -6,7 +6,7 @@ import nodemailer from "nodemailer";
 export class MailerService {
 	constructor(private readonly configService: ConfigService) {}
 
-	logger: Logger = new Logger("MailerService", { timestamp: true });
+	private readonly logger: Logger = new Logger("MailerService", { timestamp: true });
 
 	/**
 	 * Send an email to the specified email address in html format

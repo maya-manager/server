@@ -10,9 +10,16 @@ import {
 	NotFoundException,
 	Param,
 	Post,
+	Query,
 	UnauthorizedException,
 } from "@nestjs/common";
-import { LoginDto, SignupDto, VerifyAccountDto } from "./auth.dto";
+import {
+	LoginDto,
+	ResendVerificationEmailParams,
+	SignupDto,
+	VerifyAccountParams,
+	VerifyAccountQuery,
+} from "./auth.dto";
 import { AuthService } from "./auth.service";
 import { Prisma } from "@prisma/client";
 
@@ -20,7 +27,7 @@ import { Prisma } from "@prisma/client";
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
-	logger: Logger = new Logger("AuthController", { timestamp: true });
+	private readonly logger: Logger = new Logger("AuthController", { timestamp: true });
 
 	/**
 	 * `POST` /auth/signup
@@ -30,7 +37,7 @@ export class AuthController {
 	 * @param signupDto The body of the request
 	 */
 	@Post("/signup")
-	async postSignup(@Body() signupDto: SignupDto) {
+	public async postSignup(@Body() signupDto: SignupDto) {
 		try {
 			// TODO: resend verification email
 
@@ -53,16 +60,46 @@ export class AuthController {
 		}
 	}
 
+	@Get("/verify/:email/resend")
+	public async getResendVerificationEmail(@Param() params: ResendVerificationEmailParams) {
+		try {
+			await this.authService.getResendVerificationEmail(params.email);
+
+			return {
+				statusCode: HttpStatus.OK,
+				message: "verification email sent successfully",
+			};
+		} catch (err: any) {
+			if (err.code === HttpStatus.NOT_FOUND) {
+				throw new NotFoundException(err.message);
+			}
+
+			if (err.code === HttpStatus.CONFLICT) {
+				throw new ConflictException(err.message);
+			}
+
+			throw new Error(err);
+		}
+	}
+
 	/**
-	 * [GET] /auth/verify/:email/:verification_code
+	 * [GET] /auth/verify/:email
 	 *
 	 * verify user account after signup
 	 * @param params The params of the request
+	 * @param query The query of the request
 	 */
-	@Get("/verify/:email/:verification_code")
-	async getVerifyAccount(@Param() params: VerifyAccountDto) {
+	@Get("/verify/:email")
+	public async getVerifyAccount(
+		@Param() params: VerifyAccountParams,
+		@Query() query: VerifyAccountQuery,
+	) {
 		try {
-			await this.authService.getVerifyAccount(params);
+			if (!query.vc) {
+				throw new BadRequestException("verification code is required");
+			}
+
+			await this.authService.getVerifyAccount(params, query);
 
 			return {
 				statusCode: HttpStatus.OK,
@@ -87,7 +124,7 @@ export class AuthController {
 	 * Logins user with access and refresh tokens
 	 */
 	@Post("/login")
-	async postLogin(@Body() loginDto: LoginDto) {
+	public async postLogin(@Body() loginDto: LoginDto) {
 		try {
 			const tokens = await this.authService.postLogin(loginDto);
 

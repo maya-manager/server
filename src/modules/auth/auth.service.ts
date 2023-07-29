@@ -6,7 +6,7 @@ import {
 	NotFoundException,
 	UnauthorizedException,
 } from "@nestjs/common";
-import { LoginDto, SignupDto, VerifyAccountDto } from "./auth.dto";
+import { LoginDto, SignupDto, VerifyAccountParams, VerifyAccountQuery } from "./auth.dto";
 import prisma from "../../common/database/primsa";
 import { VerificationCodeService } from "../../utils/verification-code/verification-code.service";
 import { compare, genSalt, hash } from "bcrypt";
@@ -27,7 +27,7 @@ export class AuthService {
 		private readonly jwtService: JwtService,
 		private readonly configService: ConfigService,
 	) {}
-	logger: Logger = new Logger("AuthService", { timestamp: true });
+	private readonly logger: Logger = new Logger("AuthService", { timestamp: true });
 
 	/**
 	 * Create a new user in the database and send a verification email
@@ -63,25 +63,39 @@ export class AuthService {
 			});
 
 			// send verification email
-			await this.mailerService.sendEmail(
-				signupDto.email,
-				"Welcome to maya, please verify you'r email",
-				this.emailTemplate(signupDto.name, verificationCode),
-				[
-					{
-						filename: "logo",
-						path: path.resolve("./assets/logos/full.png"),
-						cid: "logo",
-					},
-					{
-						filename: "banner",
-						path: path.resolve("./assets/logos/banner.png"),
-						cid: "banner",
-					},
-				],
-			);
+			await this.sendVerificationEmail(createdUser);
 
 			return Promise.resolve(createdUser);
+		} catch (err) {
+			return Promise.reject(err);
+		}
+	}
+
+	public async getResendVerificationEmail(email: string) {
+		try {
+			const user = await prisma.user.findUnique({ where: { email } });
+
+			// check if user exists
+			if (!user) {
+				return Promise.reject(
+					this.errorService.APIError(
+						"User with this email does not exist",
+						HttpStatus.NOT_FOUND,
+					),
+				);
+			}
+
+			// check if user is already verified
+			if (user.verified) {
+				return Promise.reject(
+					this.errorService.APIError("User is already verified", HttpStatus.CONFLICT),
+				);
+			}
+
+			// send verification email
+			await this.sendVerificationEmail(user);
+
+			return Promise.resolve(user);
 		} catch (err) {
 			return Promise.reject(err);
 		}
@@ -90,14 +104,15 @@ export class AuthService {
 	/**
 	 * Verify the user after signup
 	 * @param params params from the request
+	 * @param query query from the request
 	 */
-	public async getVerifyAccount(params: VerifyAccountDto) {
+	public async getVerifyAccount(params: VerifyAccountParams, query: VerifyAccountQuery) {
 		try {
 			const user = await prisma.user.findUniqueOrThrow({ where: { email: params.email } });
 
-			if (user.verification_code !== +params.verification_code) {
+			if (user.verification_code !== +query.vc) {
 				return Promise.reject(
-					this.errorService.serviceAPIError(
+					this.errorService.APIError(
 						"Invalid verification code",
 						HttpStatus.UNAUTHORIZED,
 					),
@@ -145,7 +160,7 @@ export class AuthService {
 
 			if (!user.verified) {
 				return Promise.reject(
-					this.errorService.serviceAPIError("User not verified", HttpStatus.FORBIDDEN),
+					this.errorService.APIError("User not verified", HttpStatus.FORBIDDEN),
 				);
 			}
 
@@ -154,7 +169,7 @@ export class AuthService {
 
 			if (!isPasswordCorrect) {
 				return Promise.reject(
-					this.errorService.serviceAPIError("Invalid password", HttpStatus.UNAUTHORIZED),
+					this.errorService.APIError("Invalid password", HttpStatus.UNAUTHORIZED),
 				);
 			}
 
@@ -214,15 +229,11 @@ export class AuthService {
 	}
 
 	/**
-	 * Template for the email that will be sent to the user
-	 * on signup and this will contain the verification code
-	 *
-	 * @param name name of user to which email is to be sent
-	 * @param verificationCode the verification code to be sent
+	 * Send verification email to the user's email
+	 * @param user The user to whom the verification email is to be sent
 	 */
-	private emailTemplate(name: string, verificationCode: number) {
-		// eslint-disable-next-line no-secrets/no-secrets
-		return `
+	private async sendVerificationEmail(user: User) {
+		const emailTemplate = `
 		<img src="cid:banner" alt="banner" style="
 		display: block; margin-left: auto; margin-right: auto;
 		    height: 350px;
@@ -242,7 +253,7 @@ export class AuthService {
 		alt="Logo"
 	/>
 	<p style="margin-top: 0; font-size: medium; text-align: center">
-		Dear ${name}, <br />
+		Dear ${user.name}, <br />
 		<br />
 		Thank you for registering. Please enter this OTP in maya
 	</p>
@@ -263,7 +274,7 @@ export class AuthService {
 				margin-left: auto;
 				margin-right: auto;
 			"
-			>${verificationCode}</a
+			>${user.verification_code}</a
 		>
 	</p>
 	<p style="text-align: center; color: #888888">
@@ -272,5 +283,23 @@ export class AuthService {
 	</p>
 		
 		`;
+
+		await this.mailerService.sendEmail(
+			user.email,
+			"Welcome to maya, please verify you'r email",
+			emailTemplate,
+			[
+				{
+					filename: "logo",
+					path: path.resolve("./assets/logos/full.png"),
+					cid: "logo",
+				},
+				{
+					filename: "banner",
+					path: path.resolve("./assets/logos/banner.png"),
+					cid: "banner",
+				},
+			],
+		);
 	}
 }
