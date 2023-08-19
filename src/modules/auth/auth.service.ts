@@ -6,7 +6,13 @@ import {
 	NotFoundException,
 	UnauthorizedException,
 } from "@nestjs/common";
-import { LoginDto, SignupDto, VerifyAccountParams, VerifyAccountQuery } from "./auth.dto";
+import {
+	ForgotPasswordDto,
+	LoginDto,
+	SignupDto,
+	VerifyAccountParams,
+	VerifyAccountQuery,
+} from "./auth.dto";
 import prisma from "../../common/database/primsa";
 import { VerificationCodeService } from "../../utils/verification-code/verification-code.service";
 import { compare, genSalt, hash } from "bcrypt";
@@ -234,72 +240,13 @@ export class AuthService {
 	 */
 	private async sendVerificationEmail(user: User) {
 		const emailTemplate = `
-		<img src="cid:banner" alt="banner" style="
-		display: block; margin-left: auto; margin-right: auto;
-		    height: 350px;
-			width: 50vw;
-			text-align: center;
-			margin-top: 0;
-			margin-bottom: 0;
-		" />
-		<h1
-		style="text-align: center;"
-	>
-		Welcome To maya!
-	</h1>
-	<img
-		style="display: block; margin-left: auto; margin-right: auto; margin-top: 0; width: 20%"
-		src="cid:logo"
-		alt="Logo"
-	/>
-	<p style="margin-top: 0; font-size: medium; text-align: center">
-		Dear ${user.name}, <br />
-		<br />
-		Thank you for registering. Please enter this OTP in maya
-	</p>
-	<p style="text-align: center; margin-top: 0;">
-		<a
-			href="#"
-			style="
-				text-align: center;
-				display: flex;
-				width: 7%;
-				padding: 10px 20px;
-				background-color: #56baa7;
-				text-decoration: none;
-				border-radius: 5px;
-				font-size: medium;
-				color: #ffffff;
-				justify-content: center;
-				margin-left: auto;
-				margin-right: auto;
-			"
-			>${user.verification_code}</a
-		>
-	</p>
-	<p style="text-align: center; color: #888888">
-		If you did not register on our site, please ignore this email.
-		<br />Regards, <br />maya
-	</p>
-		
+			<div>
+				<h1>Hey ${user.name}! Welcome to Maya</h1>
+				<p>Enter this OTP: <strong>${user.verification_code}</strong>, to verify your account</p>
+				<p>Please don't share this OTP with someone else</p>
+			</div>
 		`;
 
-		await this.mailerService.sendEmail(
-			user.email,
-			"Welcome to maya, please verify you'r email",
-			emailTemplate,
-			[
-				{
-					filename: "logo",
-					path: path.resolve("./assets/logos/full.png"),
-					cid: "logo",
-				},
-				{
-					filename: "banner",
-					path: path.resolve("./assets/logos/banner.png"),
-					cid: "banner",
-				},
-			],
-		);
+		await this.mailerService.sendEmail(user.email, "Please verify you'r email", emailTemplate);
 	}
 }
