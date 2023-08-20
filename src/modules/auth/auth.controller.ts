@@ -17,6 +17,8 @@ import {
 	ForgotPasswordParams,
 	LoginDto,
 	ResendVerificationEmailParams,
+	ResetPasswordDto,
+	ResetPasswordParams,
 	SignupDto,
 	VerifyAccountParams,
 	VerifyAccountQuery,
@@ -171,6 +173,35 @@ export class AuthController {
 		} catch (err: any) {
 			if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
 				throw new NotFoundException("Account with this email does not exists");
+			}
+
+			throw new Error(err);
+		}
+	}
+
+	@Post("/reset-password/:email")
+	public async postResetPassword(
+		@Param() params: ResetPasswordParams,
+		@Body() body: ResetPasswordDto,
+	) {
+		try {
+			if (body.password !== body.cpassword) {
+				throw new BadRequestException("password and confirm password do not match");
+			}
+
+			await this.authService.postResetPassword(params, body);
+
+			return {
+				statusCode: HttpStatus.OK,
+				message: "Password reset successfully",
+			};
+		} catch (err: any) {
+			if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
+				throw new NotFoundException("Account with this email does not exists");
+			}
+
+			if (err.code === HttpStatus.UNAUTHORIZED) {
+				throw new UnauthorizedException(err.message);
 			}
 
 			throw new Error(err);

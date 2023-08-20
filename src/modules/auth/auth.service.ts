@@ -2,6 +2,8 @@ import { HttpStatus, Injectable, Logger } from "@nestjs/common";
 import {
 	ForgotPasswordParams,
 	LoginDto,
+	ResetPasswordDto,
+	ResetPasswordParams,
 	SignupDto,
 	VerifyAccountParams,
 	VerifyAccountQuery,
@@ -200,6 +202,39 @@ export class AuthService {
 			await this.sendForgotPasswordEmail(user);
 
 			return Promise.resolve(user);
+		} catch (err) {
+			return Promise.reject(err);
+		}
+	}
+
+	/**
+	 * Reset the password of the user
+	 * @param params Request params
+	 * @param body Request body
+	 */
+	public async postResetPassword(params: ResetPasswordParams, body: ResetPasswordDto) {
+		try {
+			const user = await prisma.user.findUniqueOrThrow({
+				where: { email: params.email },
+			});
+
+			if (user.verification_code !== body.verification_code) {
+				return Promise.reject(
+					this.errorService.APIError(
+						"Invalid verification code",
+						HttpStatus.UNAUTHORIZED,
+					),
+				);
+			}
+
+			const hashedPassword = await hash(body.password, 10);
+
+			const updatedUser = await prisma.user.update({
+				where: { email: params.email },
+				data: { password: hashedPassword, verification_code: 0 },
+			});
+
+			return Promise.resolve(updatedUser);
 		} catch (err) {
 			return Promise.reject(err);
 		}

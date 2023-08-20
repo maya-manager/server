@@ -48,3 +48,19 @@ export class ForgotPasswordParams {
 	@IsEmail({}, { message: "Email is not valid" })
 	email: string;
 }
+
+export class ResetPasswordParams {
+	@IsEmail({}, { message: "Email is not valid" })
+	email: string;
+}
+
+export class ResetPasswordDto {
+	@IsNotEmpty({ message: "Verification code is required" })
+	verification_code: number;
+
+	@IsNotEmpty({ message: "Password is required" })
+	password: string;
+
+	@IsNotEmpty({ message: "Confirm password is required" })
+	cpassword: string;
+}
