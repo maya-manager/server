@@ -14,6 +14,7 @@ import {
 	UnauthorizedException,
 } from "@nestjs/common";
 import {
+	ForgotPasswordParams,
 	LoginDto,
 	ResendVerificationEmailParams,
 	SignupDto,
@@ -30,7 +31,7 @@ export class AuthController {
 	private readonly logger: Logger = new Logger("AuthController", { timestamp: true });
 
 	/**
-	 * `POST` /auth/signup
+	 * [POST] /auth/signup
 	 *
 	 * This endpoint is used to create a new user
 	 *
@@ -60,6 +61,13 @@ export class AuthController {
 		}
 	}
 
+	/**
+	 * [GET] /verify/:email/resend
+	 *
+	 * This endpoint is used to resend verification email
+	 *
+	 * @params params The params of the request
+	 */
 	@Get("/verify/:email/resend")
 	public async getResendVerificationEmail(@Param() params: ResendVerificationEmailParams) {
 		try {
@@ -147,7 +155,23 @@ export class AuthController {
 				throw new NotFoundException("Account with this email or username does not exists");
 			}
 
-			this.logger.error(err);
+			throw new Error(err);
+		}
+	}
+
+	@Get("/forgot-password/:email")
+	public async getForgotPassword(@Param() params: ForgotPasswordParams) {
+		try {
+			await this.authService.getForgotPassword(params);
+
+			return {
+				statusCode: HttpStatus.OK,
+				message: "Verification email sent to your email address",
+			};
+		} catch (err: any) {
+			if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
+				throw new NotFoundException("Account with this email does not exists");
+			}
 
 			throw new Error(err);
 		}
