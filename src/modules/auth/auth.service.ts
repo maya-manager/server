@@ -218,7 +218,13 @@ export class AuthService {
 				where: { email: params.email },
 			});
 
-			if (user.verification_code !== body.verification_code) {
+			if (!user.verified) {
+				return Promise.reject(
+					this.errorService.APIError("User not verified", HttpStatus.FORBIDDEN),
+				);
+			}
+
+			if (user.verification_code !== +body.verification_code) {
 				return Promise.reject(
 					this.errorService.APIError(
 						"Invalid verification code",

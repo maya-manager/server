@@ -161,6 +161,10 @@ export class AuthController {
 		}
 	}
 
+	/**
+	 * [GET] /auth/forgot-password/:email
+	 * @param params request params
+	 */
 	@Get("/forgot-password/:email")
 	public async getForgotPassword(@Param() params: ForgotPasswordParams) {
 		try {
@@ -179,6 +183,11 @@ export class AuthController {
 		}
 	}
 
+	/**
+	 * [POST] /auth/reset-password/:email
+	 * @param params request params
+	 * @param body request body
+	 */
 	@Post("/reset-password/:email")
 	public async postResetPassword(
 		@Param() params: ResetPasswordParams,
@@ -198,6 +207,10 @@ export class AuthController {
 		} catch (err: any) {
 			if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
 				throw new NotFoundException("Account with this email does not exists");
+			}
+
+			if (err.code === HttpStatus.FORBIDDEN) {
+				throw new ForbiddenException(err.message);
 			}
 
 			if (err.code === HttpStatus.UNAUTHORIZED) {
