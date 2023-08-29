@@ -86,7 +86,7 @@
 		"ts-node": "^10.0.0",
 		"tsconfig-paths": "4.2.0",
 		"typedoc": "^0.25.0",
-		"typedoc-plugin-markdown": "^3.15.4",
+		"typedoc-plugin-markdown": "^3.16.0",
 		"typedoc-plugin-merge-modules": "^5.0.1",
 		"typedoc-plugin-missing-exports": "^2.0.1",
 		"typedoc-plugin-zod": "^1.0.2",
