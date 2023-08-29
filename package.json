@@ -76,7 +76,7 @@
 		"eslint-plugin-prettier": "5.0.0",
 		"eslint-plugin-sonarjs": "0.21.0",
 		"husky": "^8.0.3",
-		"prettier": "3.0.0",
+		"prettier": "3.0.2",
 		"prettier-eslint": "15.0.1",
 		"prisma": "^5.0.0",
 		"source-map-support": "^0.5.20",
