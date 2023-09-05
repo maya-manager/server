@@ -887,16 +887,16 @@
     "@types/jsonwebtoken" "9.0.2"
     jsonwebtoken "9.0.0"
 
-"@nestjs/platform-express@^10.1.2":
-  version "10.1.2"
-  resolved "https://registry.yarnpkg.com/@nestjs/platform-express/-/platform-express-10.1.2.tgz#f5bc986cafd996990bc53b0c78852f31f9421e65"
-  integrity sha512-cH2qiyoc3B5/tujh3rJPUcafc1tY12OJC3B01n5DzRTm4K8xELJbp+jEo3XpUQis2VyET21K7hYfwBU5RJlbaQ==
+"@nestjs/platform-express@^10.2.4":
+  version "10.2.4"
+  resolved "https://registry.yarnpkg.com/@nestjs/platform-express/-/platform-express-10.2.4.tgz#1faf96b6828125d263dc70b9469761b41ee55dd5"
+  integrity sha512-E9F6WYo6bNwvTT0saJpkr8t4BJLbZRwrX5EKbtBRQqyRcw6NAvlKdacKzoo+Sompdre0IbF8AvNRFk4uLZTWqA==
   dependencies:
     body-parser "1.20.2"
     cors "2.8.5"
     express "4.18.2"
     multer "1.4.4-lts.1"
-    tslib "2.6.1"
+    tslib "2.6.2"
 
 "@nestjs/schematics@^10.0.1", "@nestjs/schematics@^10.0.2":
   version "10.0.2"
