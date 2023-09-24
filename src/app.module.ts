@@ -6,7 +6,6 @@ import { MailerModule } from "./utils/mailer/mailer.module";
 import { ConfigModule } from "@nestjs/config";
 import { AllExceptionsFilter } from "./filters/allExceptions.filter";
 import RequestLoggerMiddleware from "./middleware/requestLogger.middleware";
-import { ErrorModule } from "./utils/error/error.module";
 import { FirebaseModule } from "./utils/firebase/firebase.module";
 import { UserModule } from "./modules/user/user.module";
 import { JwtModule } from "./utils/jwt/jwt.module";
@@ -21,7 +20,6 @@ import { JwtModule } from "./utils/jwt/jwt.module";
 		UserModule,
 		VerificationCodeModule,
 		MailerModule,
-		ErrorModule,
 		FirebaseModule,
 		JwtModule,
 	],

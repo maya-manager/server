@@ -1,4 +1,12 @@
-import { HttpStatus, Injectable, Logger } from "@nestjs/common";
+import {
+	ConflictException,
+	ForbiddenException,
+	HttpStatus,
+	Injectable,
+	Logger,
+	NotFoundException,
+	UnauthorizedException,
+} from "@nestjs/common";
 import {
 	ForgotPasswordParams,
 	LoginDto,
@@ -13,7 +21,6 @@ import { VerificationCodeService } from "../../utils/verification-code/verificat
 import { compare, genSalt, hash } from "bcrypt";
 import { MailerService } from "../../utils/mailer/mailer.service";
 import { Prisma, User } from "@prisma/client";
-import { ErrorService } from "../../utils/error/error.service";
 import randomMC from "random-material-color";
 import { JwtService } from "../../utils/jwt/jwt.service";
 
@@ -22,7 +29,6 @@ export class AuthService {
 	constructor(
 		private readonly verificationCodeService: VerificationCodeService,
 		private readonly mailerService: MailerService,
-		private readonly errorService: ErrorService,
 		private readonly jwtService: JwtService,
 	) {}
 	private readonly logger: Logger = new Logger("AuthService", { timestamp: true });
@@ -63,8 +69,15 @@ export class AuthService {
 			// send verification email
 			await this.sendVerificationEmail(createdUser);
 
-			return Promise.resolve(createdUser);
+			return Promise.resolve({
+				statusCode: HttpStatus.CREATED,
+				message: "user created and verification email sent successfully",
+			});
 		} catch (err) {
+			if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
+				throw new ConflictException("Account with this email or username already exists");
+			}
+
 			return Promise.reject(err);
 		}
 	}
@@ -75,25 +88,21 @@ export class AuthService {
 
 			// check if user exists
 			if (!user) {
-				return Promise.reject(
-					this.errorService.APIError(
-						"User with this email does not exist",
-						HttpStatus.NOT_FOUND,
-					),
-				);
+				throw new NotFoundException("User with this email does not exist");
 			}
 
 			// check if user is already verified
 			if (user.verified) {
-				return Promise.reject(
-					this.errorService.APIError("User is already verified", HttpStatus.CONFLICT),
-				);
+				throw new ConflictException("User is already verified");
 			}
 
 			// send verification email
 			await this.sendVerificationEmail(user);
 
-			return Promise.resolve(user);
+			return Promise.resolve({
+				statusCode: HttpStatus.OK,
+				message: "verification email sent successfully",
+			});
 		} catch (err) {
 			return Promise.reject(err);
 		}
@@ -109,21 +118,23 @@ export class AuthService {
 			const user = await prisma.user.findUniqueOrThrow({ where: { email: params.email } });
 
 			if (user.verification_code !== +query.vc) {
-				return Promise.reject(
-					this.errorService.APIError(
-						"Invalid verification code",
-						HttpStatus.UNAUTHORIZED,
-					),
-				);
+				throw new UnauthorizedException("Invalid verification code");
 			}
 
-			const updatedUser = await prisma.user.update({
+			await prisma.user.update({
 				where: { email: params.email },
 				data: { verified: true, verification_code: 0 },
 			});
 
-			return Promise.resolve(updatedUser);
+			return Promise.resolve({
+				statusCode: HttpStatus.OK,
+				message: "Account verified successfully",
+			});
 		} catch (err) {
+			if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
+				throw new NotFoundException("Account with this email does not exists");
+			}
+
 			return Promise.reject(err);
 		}
 	}
@@ -157,27 +168,29 @@ export class AuthService {
 			}
 
 			if (!user.verified) {
-				return Promise.reject(
-					this.errorService.APIError("User not verified", HttpStatus.FORBIDDEN),
-				);
+				throw new ForbiddenException("User not verified");
 			}
 
 			// check if password is correct
 			const isPasswordCorrect = await compare(loginDto.password, user.password);
 
 			if (!isPasswordCorrect) {
-				return Promise.reject(
-					this.errorService.APIError("Invalid password", HttpStatus.UNAUTHORIZED),
-				);
+				throw new UnauthorizedException("Invalid credentials");
 			}
 
 			const tokens = await this.createAccessAndRefreshTokens(user);
 
 			return Promise.resolve({
+				statusCode: HttpStatus.OK,
+				message: "Login successful",
 				access_token: tokens.accessToken,
 				refresh_token: tokens.refreshToken,
 			});
 		} catch (err) {
+			if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
+				throw new NotFoundException("Account with this email or username does not exists");
+			}
+
 			return Promise.reject(err);
 		}
 	}
@@ -201,8 +214,15 @@ export class AuthService {
 
 			await this.sendForgotPasswordEmail(user);
 
-			return Promise.resolve(user);
+			return Promise.resolve({
+				statusCode: HttpStatus.OK,
+				message: "Verification email sent to your email address",
+			});
 		} catch (err) {
+			if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
+				throw new NotFoundException("Account with this email does not exists");
+			}
+
 			return Promise.reject(err);
 		}
 	}
@@ -219,18 +239,11 @@ export class AuthService {
 			});
 
 			if (!user.verified) {
-				return Promise.reject(
-					this.errorService.APIError("User not verified", HttpStatus.FORBIDDEN),
-				);
+				throw new ForbiddenException("User not verified");
 			}
 
 			if (user.verification_code !== +body.verification_code) {
-				return Promise.reject(
-					this.errorService.APIError(
-						"Invalid verification code",
-						HttpStatus.UNAUTHORIZED,
-					),
-				);
+				throw new UnauthorizedException("Invalid verification code");
 			}
 
 			const hashedPassword = await hash(body.password, 10);
@@ -240,8 +253,54 @@ export class AuthService {
 				data: { password: hashedPassword, verification_code: 0 },
 			});
 
-			return Promise.resolve(updatedUser);
+			return Promise.resolve({
+				statusCode: HttpStatus.OK,
+				message: "Password reset successfully",
+			});
 		} catch (err) {
+			if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
+				throw new NotFoundException("Account with this email does not exists");
+			}
+
+			return Promise.reject(err);
+		}
+	}
+
+	public async getRefreshAccessToken(refreshToken: string) {
+		try {
+			const decoded = await this.jwtService.verifyToken<{ session_id: number }>(
+				refreshToken,
+				"refreshToken",
+			);
+
+			if (!decoded) {
+				throw new UnauthorizedException("Invalid token");
+			}
+
+			const session = await prisma.session.findUnique({ where: { id: decoded.session_id } });
+
+			if (!session) {
+				throw new UnauthorizedException("Invalid token");
+			}
+
+			const user = await prisma.user.findUnique({ where: { id: session.user_id } });
+
+			if (!user) {
+				throw new UnauthorizedException("Invalid token");
+			}
+
+			const { accessToken } = await this.createAccessAndRefreshTokens(user);
+
+			return {
+				statusCode: HttpStatus.OK,
+				message: "access token generated successfully",
+				access_token: accessToken,
+			};
+		} catch (err: any) {
+			if (err.code === "IRT") {
+				throw new UnauthorizedException("Invalid token");
+			}
+
 			return Promise.reject(err);
 		}
 	}

@@ -17,7 +17,10 @@ export class DeserializeUserMiddleware implements NestMiddleware {
 			const token = req.headers.authorization.replace(/^Bearer\s+/, "");
 
 			// verify if token is valid
-			const decodedToken = await this.jwtService.verifyToken(token, "accessToken");
+			const decodedToken = await this.jwtService.verifyToken<{ user_id: string }>(
+				token,
+				"accessToken",
+			);
 
 			// save user in res.locals
 			const userFromDb = await prisma.user.findUnique({

@@ -48,28 +48,26 @@ export class JwtService {
 		}
 	}
 
-	public async verifyToken(token: string, type: "accessToken" | "refreshToken") {
+	public async verifyToken<T>(token: string, type: "accessToken" | "refreshToken"): Promise<T> {
 		try {
-			let decodedToken: DecodedToken;
+			let decodedToken;
 
 			if (type === "accessToken") {
-				decodedToken = await this.jwtService.verifyAsync<DecodedToken>(token, {
+				decodedToken = await this.jwtService.verifyAsync(token, {
 					publicKey: this.accessTokenPublicKey,
 				});
 			} else if (type === "refreshToken") {
-				decodedToken = await this.jwtService.verifyAsync<DecodedToken>(token, {
+				decodedToken = await this.jwtService.verifyAsync(token, {
 					publicKey: this.refreshTokenPublicKey,
 				});
 			}
+
 			return Promise.resolve(decodedToken);
 		} catch (err) {
-			return Promise.reject(false);
+			return Promise.reject({
+				message: "Invalid refresh token",
+				code: "IRT",
+			});
 		}
 	}
-}
-
-interface DecodedToken {
-	user_id: string;
-	iat: number;
-	exp: number;
 }

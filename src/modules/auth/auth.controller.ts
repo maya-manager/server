@@ -1,13 +1,10 @@
 import {
 	BadRequestException,
 	Body,
-	ConflictException,
 	Controller,
-	ForbiddenException,
 	Get,
-	HttpStatus,
+	Headers,
 	Logger,
-	NotFoundException,
 	Param,
 	Post,
 	Query,
@@ -24,7 +21,6 @@ import {
 	VerifyAccountQuery,
 } from "./auth.dto";
 import { AuthService } from "./auth.service";
-import { Prisma } from "@prisma/client";
 
 @Controller("auth")
 export class AuthController {
@@ -41,26 +37,11 @@ export class AuthController {
 	 */
 	@Post("/signup")
 	public async postSignup(@Body() signupDto: SignupDto) {
-		try {
-			// TODO: resend verification email
-
-			if (signupDto.password !== signupDto.cpassword) {
-				throw new BadRequestException("password and confirm password do not match");
-			}
-
-			await this.authService.postSignup(signupDto);
-
-			return {
-				statusCode: HttpStatus.CREATED,
-				message: "user created and verification email sent successfully",
-			};
-		} catch (err: any) {
-			if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
-				throw new ConflictException("Account with this email or username already exists");
-			}
-
-			throw new Error(err);
+		if (signupDto.password !== signupDto.cpassword) {
+			throw new BadRequestException("password and confirm password do not match");
 		}
+
+		return await this.authService.postSignup(signupDto);
 	}
 
 	/**
@@ -72,24 +53,7 @@ export class AuthController {
 	 */
 	@Get("/verify/:email/resend")
 	public async getResendVerificationEmail(@Param() params: ResendVerificationEmailParams) {
-		try {
-			await this.authService.getResendVerificationEmail(params.email);
-
-			return {
-				statusCode: HttpStatus.OK,
-				message: "verification email sent successfully",
-			};
-		} catch (err: any) {
-			if (err.code === HttpStatus.NOT_FOUND) {
-				throw new NotFoundException(err.message);
-			}
-
-			if (err.code === HttpStatus.CONFLICT) {
-				throw new ConflictException(err.message);
-			}
-
-			throw new Error(err);
-		}
+		return await this.authService.getResendVerificationEmail(params.email);
 	}
 
 	/**
@@ -104,28 +68,11 @@ export class AuthController {
 		@Param() params: VerifyAccountParams,
 		@Query() query: VerifyAccountQuery,
 	) {
-		try {
-			if (!query.vc) {
-				throw new BadRequestException("verification code is required");
-			}
-
-			await this.authService.getVerifyAccount(params, query);
-
-			return {
-				statusCode: HttpStatus.OK,
-				message: "Account verified successfully",
-			};
-		} catch (err: any) {
-			if (err.code === HttpStatus.UNAUTHORIZED) {
-				throw new UnauthorizedException(err.message);
-			}
-
-			if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
-				throw new NotFoundException("Account with this email does not exists");
-			}
-
-			throw new Error(err);
+		if (!query.vc) {
+			throw new BadRequestException("verification code is required");
 		}
+
+		return await this.authService.getVerifyAccount(params, query);
 	}
 
 	/**
@@ -135,30 +82,7 @@ export class AuthController {
 	 */
 	@Post("/login")
 	public async postLogin(@Body() loginDto: LoginDto) {
-		try {
-			const tokens = await this.authService.postLogin(loginDto);
-
-			return {
-				statusCode: HttpStatus.OK,
-				message: "Login successful",
-				access_token: tokens.access_token,
-				refresh_token: tokens.refresh_token,
-			};
-		} catch (err: any) {
-			if (err.code === HttpStatus.FORBIDDEN) {
-				throw new ForbiddenException(err.message);
-			}
-
-			if (err.code === HttpStatus.UNAUTHORIZED) {
-				throw new UnauthorizedException(err.message);
-			}
-
-			if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
-				throw new NotFoundException("Account with this email or username does not exists");
-			}
-
-			throw new Error(err);
-		}
+		return await this.authService.postLogin(loginDto);
 	}
 
 	/**
@@ -167,20 +91,7 @@ export class AuthController {
 	 */
 	@Get("/forgot-password/:email")
 	public async getForgotPassword(@Param() params: ForgotPasswordParams) {
-		try {
-			await this.authService.getForgotPassword(params);
-
-			return {
-				statusCode: HttpStatus.OK,
-				message: "Verification email sent to your email address",
-			};
-		} catch (err: any) {
-			if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
-				throw new NotFoundException("Account with this email does not exists");
-			}
-
-			throw new Error(err);
-		}
+		return await this.authService.getForgotPassword(params);
 	}
 
 	/**
@@ -193,31 +104,19 @@ export class AuthController {
 		@Param() params: ResetPasswordParams,
 		@Body() body: ResetPasswordDto,
 	) {
-		try {
-			if (body.password !== body.cpassword) {
-				throw new BadRequestException("password and confirm password do not match");
-			}
-
-			await this.authService.postResetPassword(params, body);
-
-			return {
-				statusCode: HttpStatus.OK,
-				message: "Password reset successfully",
-			};
-		} catch (err: any) {
-			if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
-				throw new NotFoundException("Account with this email does not exists");
-			}
-
-			if (err.code === HttpStatus.FORBIDDEN) {
-				throw new ForbiddenException(err.message);
-			}
-
-			if (err.code === HttpStatus.UNAUTHORIZED) {
-				throw new UnauthorizedException(err.message);
-			}
-
-			throw new Error(err);
+		if (body.password !== body.cpassword) {
+			throw new BadRequestException("password and confirm password do not match");
 		}
+
+		return await this.authService.postResetPassword(params, body);
+	}
+
+	@Get("/refresh")
+	public async getRefreshAccessToken(@Headers("x-refresh") authHeader) {
+		if (!authHeader) {
+			throw new UnauthorizedException("Invalid refresh token");
+		}
+
+		return await this.authService.getRefreshAccessToken(authHeader);
 	}
 }
