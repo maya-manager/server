@@ -22,14 +22,14 @@ import { compare, genSalt, hash } from "bcrypt";
 import { MailerService } from "../../utils/mailer/mailer.service";
 import { Prisma, User } from "@prisma/client";
 import randomMC from "random-material-color";
-import { JwtService } from "../../utils/jwt/jwt.service";
+import { AuthTokens } from "./utils/authTokens.util";
 
 @Injectable()
 export class AuthService {
 	constructor(
 		private readonly verificationCodeService: VerificationCodeService,
 		private readonly mailerService: MailerService,
-		private readonly jwtService: JwtService,
+		private readonly authTokens: AuthTokens,
 	) {}
 	private readonly logger: Logger = new Logger("AuthService", { timestamp: true });
 
@@ -268,10 +268,7 @@ export class AuthService {
 
 	public async getRefreshAccessToken(refreshToken: string) {
 		try {
-			const decoded = await this.jwtService.verifyToken<{ session_id: number }>(
-				refreshToken,
-				"refreshToken",
-			);
+			const decoded = await this.authTokens.verifyRefreshToken(refreshToken);
 
 			if (!decoded) {
 				throw new UnauthorizedException("Invalid token");
@@ -319,11 +316,9 @@ export class AuthService {
 			});
 
 			// create access and refresh tokens
-			const accessToken = await this.jwtService.signToken({ user_id: user.id }, "access");
-			const refreshToken = await this.jwtService.signToken(
-				{ session_id: session.id },
-				"refresh",
-			);
+			// const accessToken = await this.jwtService.signToken({ user_id: user.id }, "access");
+			const accessToken = await this.authTokens.signAccessToken(user.id);
+			const refreshToken = await this.authTokens.signRefreshToken(session.id);
 
 			return Promise.resolve({
 				accessToken,

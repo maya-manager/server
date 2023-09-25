@@ -1,11 +1,11 @@
 import { Injectable, NestMiddleware, UnauthorizedException } from "@nestjs/common";
 import { NextFunction, Request, Response } from "express";
-import { JwtService } from "../utils/jwt/jwt.service";
-import prisma from "../common/database/primsa";
+import prisma from "../../../common/database/primsa";
+import { AuthTokens } from "../utils/authTokens.util";
 
 @Injectable()
 export class DeserializeUserMiddleware implements NestMiddleware {
-	constructor(private readonly jwtService: JwtService) {}
+	constructor(private readonly authTokens: AuthTokens) {}
 
 	async use(req: Request, res: Response, next: NextFunction) {
 		// get authorization token from headers
@@ -17,10 +17,7 @@ export class DeserializeUserMiddleware implements NestMiddleware {
 			const token = req.headers.authorization.replace(/^Bearer\s+/, "");
 
 			// verify if token is valid
-			const decodedToken = await this.jwtService.verifyToken<{ user_id: string }>(
-				token,
-				"accessToken",
-			);
+			const decodedToken = await this.authTokens.verifyAccessToken(token);
 
 			// save user in res.locals
 			const userFromDb = await prisma.user.findUnique({

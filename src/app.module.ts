@@ -8,7 +8,6 @@ import { AllExceptionsFilter } from "./filters/allExceptions.filter";
 import RequestLoggerMiddleware from "./middleware/requestLogger.middleware";
 import { FirebaseModule } from "./utils/firebase/firebase.module";
 import { UserModule } from "./modules/user/user.module";
-import { JwtModule } from "./utils/jwt/jwt.module";
 
 @Module({
 	imports: [
@@ -21,7 +20,6 @@ import { JwtModule } from "./utils/jwt/jwt.module";
 		VerificationCodeModule,
 		MailerModule,
 		FirebaseModule,
-		JwtModule,
 	],
 	controllers: [],
 })
